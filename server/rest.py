@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import random
 import string
 import json as simplejson
