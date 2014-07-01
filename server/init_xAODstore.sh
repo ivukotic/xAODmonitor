@@ -3,7 +3,7 @@
 # chkconfig: - 70 40
 # description: xAODreceiver startup script
 #
-xAODstore=/home/ivukotic/xAODmonitor/server/xAODstore.py
+xAODstore=/home/ivukotic/xAODmonitor/server/start.sh
 
 # TMPDIR set to SysV IPC ramdrive to avoid include processing failures
 TMPDIR=/dev/shm
