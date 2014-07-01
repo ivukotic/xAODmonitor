@@ -8,8 +8,6 @@ import json as simplejson
 
 from pymongo import MongoClient
 
-#mongo --port 27017 -u ivukotic -p Leptir_3! --authenticationDatabase xAOD
-
 client = MongoClient('localhost', 27017)
 db=client.xAOD
 collection = db.testData
@@ -29,5 +27,5 @@ class xAODreceiver(object):
 if __name__ == '__main__':    
     cherrypy.config.update({'tools.log_headers.on': False})
     print cherrypy.config
-    cherrypy.quickstart(xAODreceiver(), '/', 'rest.conf')
+    cherrypy.quickstart(xAODreceiver(), '/', '/home/ivukotic/xAODmonitor/server/xAODstore.conf')
     
