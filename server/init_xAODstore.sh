@@ -3,7 +3,7 @@
 # chkconfig: - 70 40
 # description: xAODreceiver startup script
 #
-xAODstore=/home/ivukotic/xAODmonitor/server/start.sh
+xAODstore=/home/ivukotic/xAODmonitor/server/xAODstore.py
 
 # TMPDIR set to SysV IPC ramdrive to avoid include processing failures
 TMPDIR=/dev/shm
@@ -18,7 +18,8 @@ case "$1" in
       echo -n "Starting xAODstore: "
       [ -f $xAODstore ] || exit 1
 
-      daemon $xAODstore
+      daemon $xAODstore &
+      echo $! > /var/run/xAODstore.pid 
       RETVAL=$?
       echo
       [ $RETVAL -eq 0 ] && touch /var/lock/subsys/xaodstore
@@ -26,8 +27,9 @@ case "$1" in
 
   stop)
       echo -n "Shutting down xAODstore: "
-      killproc xAODstore.py
+      kill `cat /var/run/xAODstore.pid`
       RETVAL=$?
+      rm -f /var/run/xAODstore.pid 
       echo
       [ $RETVAL -eq 0 ] && rm -f /var/lock/subsys/xaodstore
         ;;
@@ -38,7 +40,7 @@ case "$1" in
         RETVAL=$?
         ;;
   status)
-        status xAODstore.py
+        status `cat /var/run/xAODstore.pid`
         RETVAL=$?
         ;;
   *)
