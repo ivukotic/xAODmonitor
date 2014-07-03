@@ -9,10 +9,13 @@ client = MongoClient('localhost', 27017)
 db=client.xAOD
 res = db.testData
 
-# res.remove({}) #all
-# res.remove({ 'cputime':{'$lt':100} })
+# r=res.remove({}) #all
+# r=res.remove({ 'cputime':{'$lt':100} })
+# print 'results removed:',r['n']
 
 print 'rows:', res.count()
+#import time
+#while(True):a=res.count();time.sleep(10);print res.count()-a;
 #print 'data size:', res.dataSize()
 
 print '====================== first 2 rows'
@@ -29,7 +32,7 @@ c=res.aggregate([
                 { '$group':{ '_id':"$timestamp", 'totalCPU':{'$sum':"$cputime"}, 'totalWALL':{'$sum':"$walltime"} } } ])
 print c
 
-print '====================== map reduce.'      
+print '====================== map reduce. on time.'      
 lastrun=1404156881;  
 mapfunction = Code("function(){ emit(this.timestamp,this.cputime) };")
 reducefunction = Code("function(key,values){ return Array.sum(values) };")
@@ -47,5 +50,17 @@ for r in c:
     brnames=''.join(brs.keys())
     #print rid, brnames
     bhash = hashlib.md5(brnames).hexdigest()
-    print bhash
-    res.update( {'_id':r['_id']}, {"$set":{'qwerty':bhash}} )
+    #print bhash
+    co=res.update( {'_id':r['_id']}, {"$set":{'bhash':bhash}} )
+    if (co['ok']!=1.0):
+        print 'problem in adding the bhash', co
+        break
+        
+print '====================== map reduce. on bash.'      
+lastrun=1404156881;  
+mapfunction = Code("function(){ emit(this.bhash,this.cputime) };")
+reducefunction = Code("function(key,values){ return Array.sum(values) };")
+c=res.map_reduce( mapfunction, reducefunction,'skim', query={'timestamp':{'$gt':lastrun}} )
+print c
+c=db.skim.find()
+for r in c: print(r)

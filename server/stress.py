@@ -19,7 +19,7 @@ for i in range(rows):
     for i in range(random.randint(1,10)):
         result['files'].append("asdf.root")
 
-    for i in range(15):
+    for i in range(random.randint(990,998)):
         result['branches']["branch_number_"+str(i)]=random.randint(0,1000)
     
     data=simplejson.JSONEncoder().encode(result)
