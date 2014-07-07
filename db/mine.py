@@ -3,7 +3,7 @@ from pymongo import MongoClient
 from bson.code import Code
 from bson.objectid import ObjectId
 import json as simplejson
-import hashlib
+import hashlib, time
 
 client = MongoClient('localhost', 27017)
 db=client.xAOD
@@ -14,7 +14,6 @@ res = db.testData
 # print 'results removed:',r['n']
 
 print 'rows:', res.count()
-#import time
 #while(True):a=res.count();time.sleep(10);print res.count()-a;
 #print 'data size:', res.dataSize()
 
@@ -43,7 +42,8 @@ for r in c: print(r)
 
 
 print '======================== adding hash manually'
-c=res.find({ 'timestamp':{'$gt':1404156881}},{'branches':1}).limit(10000)
+a=time.time()
+c=res.find({ "bhash":{"$exists":False} })
 for r in c:
     brs=r['branches']
     #print rid, brs
@@ -55,6 +55,8 @@ for r in c:
     if (co['ok']!=1.0):
         print 'problem in adding the bhash', co
         break
+
+print "hashes added in: ",time.time()-a, "seconds"
         
 print '====================== map reduce. on bash.'      
 lastrun=1404156881;  
