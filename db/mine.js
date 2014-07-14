@@ -64,8 +64,8 @@ sor={'bhash': 1}
 function mapfunction(){ emit(this.bhash,this.branches) };
 function reducefunction(key,Branches){
     reducedBranches = Branches[0];
-    for (var idx = 1; idx < Branches.length; idx++) {
-        for (var b in Branches[idx]){
+    for (var b in Branches[idx]){
+        for (var idx = 1; idx < Branches.length; idx++) {
             reducedBranches[b] += Branches[idx][b];
         }
     }
