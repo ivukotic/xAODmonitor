@@ -1,6 +1,6 @@
-show dbs
-use xAOD
-show collections
+conn = new Mongo();
+db.adminCommand('listDatabases')
+db = conn.getDB("xAOD");
 
 print("rows: ", db.testData.find().count())
 
