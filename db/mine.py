@@ -58,11 +58,45 @@ for r in c:
 
 print "hashes added in: ",time.time()-a, "seconds"
         
-print '====================== map reduce. on bash.'      
-lastrun=1404156881;  
+
+print '================ make sure there is an index on bhash.'
+#res.ensureIndex( { "bhash": 1 } )        
+        
+        
+print '====================== map reduce. on bhash. sums of cputimes.'      
+lastrun=1404156881
 mapfunction = Code("function(){ emit(this.bhash,this.cputime) };")
 reducefunction = Code("function(key,values){ return Array.sum(values) };")
 c=res.map_reduce( mapfunction, reducefunction,'skim', query={'timestamp':{'$gt':lastrun}} )
+print c
+c=db.skim.find()
+for r in c: print(r)
+
+
+print '====================== map reduce. on bhash. entries read per branch.'      
+a=time.time()
+lastrun=1404156881
+que={'timestamp':{'$gt':lastrun}}
+sor={'bhash': 1} 
+
+rf="""
+function(key,Branches){ 
+    reducedBranches = Branches[0];
+    for (var idx = 1; idx < Branches.length; idx++) {
+        for (var b in Branches[idx]){
+            reducedBranches[b] += Branches[idx][b];
+        }
+    }
+    return reducedBranches;
+};
+"""
+
+mapfunction = Code("function(){ emit(this.bhash,this.branches) };")
+reducefunction = Code(rf);
+c=res.map_reduce( mapfunction, reducefunction,'skim', query=que, sort=sor)
+
+
+print "branches reduced in: ",time.time()-a, "seconds"
 print c
 c=db.skim.find()
 for r in c: print(r)
