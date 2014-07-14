@@ -1,5 +1,5 @@
 conn = new Mongo();
-db.adminCommand('listDatabases')
+printjson(db.adminCommand('listDatabases').databases);
 db = conn.getDB("xAOD");
 
 print("rows: ", db.testData.find().count())
@@ -17,19 +17,20 @@ print("====================== where cputime <200")
 c= db.testData.find({ 'cputime':{'$lt':200} },{'cputime':1,'walltime':1})
 print("found:",c.length(),"rows")
 print("first row:")
-c[1]
+printjson( c[0] );
 
 print("====================== aggregating all.")       
-db.testData.aggregate([
+agr=db.testData.aggregate([
                 { '$match':{'cputime':{'$lt':2000}} },
                 { '$group':{ '_id':"$timestamp", 'totalCPU':{'$sum':"$cputime"}, 'totalWALL':{'$sum':"$walltime"} } } ])
-
+                
+printjson(agr.result)
 
 print("====================== map reduce. on time.")      
 lastrun=1404156881;  
-function mapfunction(){ emit(this.timestamp,this.cputime) };
-function reducefunction(key,values){ return Array.sum(values) };
-db.testData.mapReduce( mapfunction, reducefunction,'skim', query={'timestamp':{'$gt':lastrun}} )
+function timemap(){ emit(this.timestamp,this.cputime) };
+function timereduce(key,values){ return Array.sum(values) };
+db.testData.mapReduce( timemap, timereduce,'skim', query={'timestamp':{'$gt':lastrun}} )
 db.skim.find().forEach( function(d){print ("timestamp:", d._id, "CPUtime:",d.value) } )
 
 print ("======================== adding hash manually")
@@ -47,9 +48,9 @@ db.testData.ensureIndex( { "bhash": 1 } )
         
 print("====================== map reduce. on bhash. sums of cputimes.")      
 lastrun=1404156881
-function mapfunction(){ emit(this.bhash,this.cputime) };
-function reducefunction(key,values){ return Array.sum(values) };
-db.testData.mapReduce( mapfunction, reducefunction,'skimOnBhash', query={'timestamp':{'$gt':lastrun}} )
+function bhashmapCPU(){ emit(this.bhash,this.cputime) };
+function bhashreduceCPU(key,values){ return Array.sum(values) };
+db.testData.mapReduce( bhashmapCPU, bhashreduceCPU,'skimOnBhash', query={'timestamp':{'$gt':lastrun}} )
 db.skimOnBhash.find().forEach( function(d){print ("bHash:", d._id, "CPUtime:",d.value) } )
 
 
