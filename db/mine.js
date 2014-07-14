@@ -30,7 +30,8 @@ print("====================== map reduce. on time.")
 lastrun=1404156881;  
 function timemap(){ emit(this.timestamp,this.cputime) };
 function timereduce(key,values){ return Array.sum(values) };
-db.testData.mapReduce( timemap, timereduce,'skim', query={'timestamp':{'$gt':lastrun}} )
+r=db.testData.mapReduce( timemap, timereduce,'skim', query={'timestamp':{'$gt':lastrun}} )
+printjson(r)
 db.skim.find().forEach( function(d){print ("timestamp:", d._id, "CPUtime:",d.value) } )
 
 print ("======================== adding hash manually")
@@ -51,6 +52,7 @@ lastrun=1404156881
 function bhashmapCPU(){ emit(this.bhash,this.cputime) };
 function bhashreduceCPU(key,values){ return Array.sum(values) };
 db.testData.mapReduce( bhashmapCPU, bhashreduceCPU,'skimOnBhash', query={'timestamp':{'$gt':lastrun}} )
+printjson(r)
 db.skimOnBhash.find().forEach( function(d){print ("bHash:", d._id, "CPUtime:",d.value) } )
 
 
@@ -70,5 +72,6 @@ function reducefunction(key,Branches){
     return reducedBranches;
 }
 
-db.testData.mapReduce( mapfunction, reducefunction,'skim', query=que, sort=sor)
-db.skim.find()
+r=db.testData.mapReduce( mapfunction, reducefunction,'skim', query=que, sort=sor)
+printjson(r)
+db.skim.find().forEach( function(d){print ("bHash:", d._id); printjson(d.value) } )
