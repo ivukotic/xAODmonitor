@@ -9,7 +9,7 @@ s = requests.Session()
 st=time.time()
 rows=10000
 
-for i in range(rows):
+for w in range(rows):
     
     result={}
     result['cputime']=random.randint(0,1000)
@@ -25,7 +25,8 @@ for i in range(rows):
     data=simplejson.JSONEncoder().encode(result)
     
     r = s.post('http://db.mwt2.org:8080/', params={'data': data})
-    print r.status_code, r.text
+    if (r.status_code!=200): print r.status_code, r.text
 
-et=time.time()
-print 'insertion rate:',str(rows/(et-st)),'Hz'
+    if (not w%5):
+        et=time.time()
+        print w,'insertion rate:',str(w/(et-st)),'Hz'
