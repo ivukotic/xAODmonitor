@@ -4,8 +4,8 @@ db = conn.getDB("xAOD");
 
 print("rows: ", db.testData.find().count())
 
-print ("====================== first 2 rows")
-db.testData.find().limit(2)
+//print ("====================== first 2 rows")
+//db.testData.find().limit(2)
 
 //db.testData.remove({}) #all
 //db.testData.remove({ 'cputime':{'$lt':100} })
@@ -38,14 +38,22 @@ agr=db.testData.aggregate([
                 
 printjson(agr.result)
         
-//print("====================== map reduce. on bhash. sums of cputimes.")      
-//lastrun=1404156881
-//function bhashmapCPU(){ emit(this.bhash,this.cputime) };
-//function bhashreduceCPU(key,values){ return Array.sum(values) };
-//db.testData.mapReduce( bhashmapCPU, bhashreduceCPU,'skimOnBhash', query={'timestamp':{'$gt':lastrun}} )
-//printjson(r)
-//db.skimOnBhash.find().forEach( function(d){
-//    print ("bHash:", d._id, "CPUtime:",d.value) } )
+print("====================== map reduce. on bhash. sums of cputimes.")      
+lastrun=1404156881
+function bhashmapTimes(){ var val=emit(this.bhash,{c:this.cputime, w:this.walltime}) };
+function bhashreduceTimes(key,values){ 
+    redVal={c:0,w:0};
+    for (var i=0;i<values.length;i++){
+        redVal.c+=values[i].c;
+        redVal.w+=values[i].w;
+        }
+    return redVal;
+    }
+db.testData.mapReduce( bhashmapTimes, bhashreduceTimes,'mr_times', query={'timestamp':{'$gt':lastrun}} )
+db.mr_times.find().forEach( function(d){
+    print ("bHash:", d._id);
+    printjson(d.value);
+    })
 
 
 print("====================== map reduce. on bhash. entries read per branch.")
@@ -64,9 +72,9 @@ function reducefunction(key,Branches){
     return reducedBranches;
 }
 
-r=db.testData.mapReduce( mapfunction, reducefunction,'skim', query=que, sort=sor)
+r=db.testData.mapReduce( mapfunction, reducefunction,'mr_branch_usage', query=que, sort=sor)
 printjson(r)
-db.skim.find().forEach( function(d){
+db.mr_branch_usage.find().forEach( function(d){
     print ("bHash:", d._id); 
     //printjson(d.value); 
     })
