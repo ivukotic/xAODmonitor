@@ -1,10 +1,12 @@
 #!/usr/bin/env python
-import requests
+import urllib,urllib2
 import json as simplejson
 import random
 import time
 
-s = requests.Session()
+import socket
+timeout = 2
+socket.setdefaulttimeout(timeout)
 
 st=time.time()
 rows=10000
@@ -24,14 +26,13 @@ for w in range(rows):
     
     data=simplejson.JSONEncoder().encode(result)
     try:
-        r = s.post('http://db.mwt2.org:8080/', params={'data': data},timeout=2.0)
-        if (r.status_code!=200): print r.status_code, r.text
-    except requests.exceptions.HTTPError, err:
+        data = urllib.urlencode({'data':data})
+        req = urllib2.Request('http://db.mwt2.org:8080/', data)
+        r = urllib2.urlopen(req)
+    except urllib2.HTTPError, err:
         print err
-    except requests.exceptions.Timeout, e:
-        print "Error: ",e 
     
 
-    if (not w%5):
+    if (not w%10):
         et=time.time()
         print w,'insertion rate:',str(w/(et-st)),'Hz'
