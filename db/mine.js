@@ -19,13 +19,6 @@ print("found:",c.length(),"rows")
 print("first row:")
 printjson( c[0] );
 
-print("====================== aggregating all.")       
-agr=db.testData.aggregate([
-                { '$match':{'cputime':{'$lt':2000}} },
-                { '$group':{ '_id':"$timestamp", 'totalCPU':{'$sum':"$cputime"}, 'totalWALL':{'$sum':"$walltime"} } } ])
-                
-printjson(agr.result)
-
 print ("======================== adding hash manually")
 db.testData.find({ "bhash":{"$exists":false} }).forEach(function(r){
     brs=Object.keys(r.branches).join(""); 
@@ -38,6 +31,12 @@ db.testData.find({ "bhash":{"$exists":false} }).forEach(function(r){
 print("================ make sure there is an index on bhash.");
 db.testData.ensureIndex( { "bhash": 1 } )        
         
+print("====================== aggregating all.")       
+agr=db.testData.aggregate([
+                { '$match':{'cputime':{'$lt':2000}} },
+                { '$group':{ '_id':"$bhash", 'totalCPU':{'$sum':"$cputime"}, 'totalWALL':{'$sum':"$walltime"} } } ])
+                
+printjson(agr.result)
         
 //print("====================== map reduce. on bhash. sums of cputimes.")      
 //lastrun=1404156881
