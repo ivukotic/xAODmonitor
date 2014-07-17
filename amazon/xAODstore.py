@@ -10,19 +10,19 @@ class xAODreceiver(object):
     @cherrypy.tools.accept(media='application/json')
     def __init__(self):
         logfile = open('xAODraw.txt', 'wb')
-        counter=0
+        self.counter=0
     def POST(self, data):
         ts=int(time.time())
         result=simplejson.JSONDecoder().decode(data)
         result["timestamp"]=ts
         logfile.write(result)
-        counter+=1
-        if counter>100:
+        self.counter+=1
+        if self.counter>100:
             logfile.close
         return 'OK'
         
 if __name__ == '__main__':    
     cherrypy.config.update({'tools.log_headers.on': False})
     print cherrypy.config
-    cherrypy.quickstart(xAODreceiver(), '/', '/home/ec2-user/xAODmonitor/server/xAODstore.conf')
+    cherrypy.quickstart(xAODreceiver(), '/', '/home/ec2-user/xAODmonitor/amazon/xAODstore.conf')
     

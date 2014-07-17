@@ -27,7 +27,7 @@ for w in range(rows):
     data=simplejson.JSONEncoder().encode(result)
     try:
         data = urllib.urlencode({'data':data})
-        req = urllib2.Request('http://54.187.219.96/', data)
+        req = urllib2.Request('http://54.187.219.96:80/', data)
         r = urllib2.urlopen(req)
     except urllib2.HTTPError, err:
         print err
