@@ -8,10 +8,12 @@ import json as simplejson
 logfile = open('xAODraw.txt', 'wa')
 
 def replaceLogFile():
+    print 'replacing Log File...'
     logfile.close()
-    if not os.path.exists("LogFiles"):
-        os.makedirs("LogFiles")
-    os.rename('xAODraw.txt','LogFiles/xAODraw'+str(int(time.time()))+'.txt')
+    if not os.path.exists( os.getcwd() + "/LogFiles"):
+        print 'creating a directory for them.'
+        os.makedirs(os.getcwd() + "LogFiles")
+    os.rename(os.getcwd() + 'xAODraw.txt',os.getcwd() + '/LogFiles/xAODraw'+str(int(time.time()))+'.txt')
     logfile = open('xAODraw.txt', 'wa')
     
 class xAODreceiver(object):
@@ -26,7 +28,7 @@ class xAODreceiver(object):
         simplejson.dump(result,logfile)
         self.counter+=1
         print self.counter
-        if self.counter==100:
+        if not self.counter%100:
             replaceLogFile()
         return 'OK'
     
