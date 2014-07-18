@@ -2,11 +2,18 @@
 import string
 import json as simplejson
 import cherrypy
-import time
+import os,time
 import json as simplejson
 
 logfile = open('xAODraw.txt', 'wa')
 
+def replaceLogFile():
+    logfile.close()
+    if not os.path.exists("LogFiles"):
+        os.makedirs("LogFiles")
+    os.rename('xAODraw.txt','LogFiles/xAODraw'+str(int(time.time()))+'.txt')
+    logfile = open('xAODraw.txt', 'wa')
+    
 class xAODreceiver(object):
     exposed = True
     @cherrypy.tools.accept(media='application/json')
@@ -16,10 +23,14 @@ class xAODreceiver(object):
         ts=int(time.time())
         result=simplejson.JSONDecoder().decode(data)
         result["timestamp"]=ts
-        print self.counter, result
         simplejson.dump(result,logfile)
         self.counter+=1
+        print self.counter
+        if self.counter==100:
+            replaceLogFile()
         return 'OK'
+    
+    
         
 if __name__ == '__main__':    
     cherrypy.config.update({'tools.log_headers.on': False})
