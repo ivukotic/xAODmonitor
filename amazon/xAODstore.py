@@ -12,8 +12,15 @@ def replaceLogFile():
     logfile.close()
     if not os.path.exists( os.getcwd() + "/LogFiles"):
         print 'creating a directory for them.'
-        os.makedirs(os.getcwd() + "LogFiles")
-    os.rename(os.getcwd() + 'xAODraw.txt',os.getcwd() + '/LogFiles/xAODraw'+str(int(time.time()))+'.txt')
+        try:
+            os.makedirs(os.getcwd() + "/LogFiles")
+        except OSError, e:  
+            print ("Error: %s - %s." % (e.filename,e.strerror))
+    try:
+        os.rename(os.getcwd() + '/xAODraw.txt',os.getcwd() + '/LogFiles/xAODraw'+str(int(time.time()))+'.txt')
+    except OSError, e:  
+        print ("Error: %s - %s." % (e.filename,e.strerror))
+            
     logfile = open('xAODraw.txt', 'wa')
     
 class xAODreceiver(object):
