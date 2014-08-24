@@ -16,6 +16,7 @@ tdb=client.trace
 tcollection = tdb.fax
 
 class Trace(object):
+    @cherrypy.tools.json_in()
     exposed = True
     def POST(self, res):
         ts=int(time.time())
@@ -29,7 +30,13 @@ class xAODreceiver(object):
     trace=Trace()
     
     @cherrypy.tools.accept(media='application/json')
+    @cherrypy.tools.json_in()
     
+    def myTrace(self):
+        input_json = cherrypy.request.json
+        print input_json
+        return "trace OK"
+        
     def POST(self, data):
         ts=int(time.time())
         result=simplejson.JSONDecoder().decode(data)
