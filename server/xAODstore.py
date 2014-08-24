@@ -12,9 +12,22 @@ client = MongoClient('localhost', 27017)
 db=client.xAOD
 collection = db.testData
 
+tdb=client.trace
+tcollection = tdb.fax
 
+class Trace(object):
+    exposed = True
+    def POST(self, res):
+        ts=int(time.time())
+        result=simplejson.JSONDecoder().decode(res)
+        result["timestamp"]=ts
+        tcollection.insert(result)
+        return 'trace OK.'
+        
 class xAODreceiver(object):
     exposed = True
+    trace=Trace()
+    
     @cherrypy.tools.accept(media='application/json')
     
     def POST(self, data):
