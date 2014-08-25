@@ -7,7 +7,7 @@ import hashlib, time
 
 
 class IP:
-    def __init__(ip):
+    def __init__(self,ip):
         self.ip=ip
         self.counts=0
         self.upstream=[]
@@ -15,7 +15,7 @@ class IP:
         self.name=""
         self.lognitude=0
         self.latitude=0
-    def prnt():
+    def prnt(self):
         print "name:      ",self.name, "\tIP:",self.getIP(), "\tlat/lon: ",self.longitude, self.latitude
         print "upstream:  ",self.upstream.join()
         print "downstream:",self.downstream.join()
