@@ -124,7 +124,8 @@ for path in distinctPaths.values():
         if h<(pl-2): ip.downstream.append(path[h+1])
         ip.counts+=1
 
-
+for ip in distinctIPs.values():
+    ip.prnt()
     
 #print '====================== map reduce. on bhash. entries read per branch.'      
 #a=time.time()
