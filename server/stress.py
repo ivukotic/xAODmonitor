@@ -5,6 +5,7 @@ import random
 import time
 
 s = requests.Session()
+headers = {'Content-type': 'application/json'}
 
 st=time.time()
 rows=10000
@@ -22,9 +23,9 @@ for w in range(rows):
     for i in range(random.randint(990,998)):
         result['branches']["branch_number_"+str(i)]=random.randint(0,1000)
     
-    data=simplejson.JSONEncoder().encode(result)
+    data=simplejson.dumps(result)
     try:
-        r = s.post('http://db.mwt2.org:8080/', params={'data': data},timeout=2.0)
+        r = s.post('http://db.mwt2.org:8080/', data, headers=headers, timeout=2.0)
         if (r.status_code!=200): print r.status_code, r.text
     except requests.exceptions.HTTPError, err:
         print err

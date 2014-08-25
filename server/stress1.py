@@ -24,10 +24,9 @@ for w in range(rows):
     for i in range(random.randint(990,998)):
         result['branches']["branch_number_"+str(i)]=random.randint(0,1000)
     
-    data=simplejson.JSONEncoder().encode(result)
+    data=simplejson.dumps(result)
     try:
-        data = urllib.urlencode({'data':data})
-        req = urllib2.Request('http://db.mwt2.org:8080/', data)
+        req = urllib2.Request('http://db.mwt2.org:8080/', data, {'Content-Type': 'application/json'})
         r = urllib2.urlopen(req)
     except urllib2.HTTPError, err:
         print err
