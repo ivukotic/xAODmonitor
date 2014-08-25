@@ -1,4 +1,10 @@
 #!/usr/bin/env python
+
+# curl -H 'Content-Type: application/json' -d @d.json "http://db.mwt2.org:8080/" 
+# curl -H 'Content-Type: application/json' -d @d.json "http://db.mwt2.org:8080/trace"
+# cat d.json 
+# { "method" : "guru.test", "params" : [ "Guru" ], "id" : 123 }
+
 import random
 import string
 import json as simplejson
@@ -16,11 +22,12 @@ tdb=client.trace
 tcollection = tdb.fax
 
 class Trace(object):
-    @cherrypy.tools.json_in()
     exposed = True
-    def POST(self, res):
+    @cherrypy.tools.json_in()
+    
+    def POST(self):
         ts=int(time.time())
-        result=simplejson.JSONDecoder().decode(res)
+	result=cherrypy.request.json
         result["timestamp"]=ts
         tcollection.insert(result)
         return 'trace OK.'
@@ -32,20 +39,14 @@ class xAODreceiver(object):
     @cherrypy.tools.accept(media='application/json')
     @cherrypy.tools.json_in()
     
-    def myTrace(self):
-        input_json = cherrypy.request.json
-        print input_json
-        return "trace OK"
-        
-    def POST(self, data):
+    def POST(self):
         ts=int(time.time())
-        result=simplejson.JSONDecoder().decode(data)
-        result["timestamp"]=ts
-        collection.insert(result)
+	data=cherrypy.request.json
+        data["timestamp"]=ts
+	collection.insert(data)
         return 'OK'
         
 if __name__ == '__main__':    
     cherrypy.config.update({'tools.log_headers.on': False})
     print cherrypy.config
     cherrypy.quickstart(xAODreceiver(), '/', '/home/ivukotic/xAODmonitor/server/xAODstore.conf')
-    
