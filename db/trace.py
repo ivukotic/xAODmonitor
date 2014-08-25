@@ -15,6 +15,12 @@ class IP:
         self.name=""
         self.lognitude=0
         self.latitude=0
+    def getIP(self):
+        o1 = int(self.ip / 16777216) % 256
+        o2 = int(self.ip / 65536) % 256
+        o3 = int(self.ip / 256) % 256
+        o4 = int(self.ip) % 256
+        return '%(o1)s.%(o2)s.%(o3)s.%(o4)s' % locals()
     def prnt(self):
         print "name:      ",self.name, "\tIP:",self.getIP(), "\tlat/lon: ",self.longitude, self.latitude
         print "upstream:  ",self.upstream.join()
