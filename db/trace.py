@@ -23,8 +23,8 @@ class IP:
         return '%(o1)s.%(o2)s.%(o3)s.%(o4)s' % locals()
     def prnt(self):
         print "name:      ",self.name, "\tIP:",self.getIP(), "\tlat/lon: ",self.longitude, self.latitude
-        print "upstream:  ",self.upstream.join()
-        print "downstream:",self.downstream.join()
+        print "upstream:  ",self.upstream
+        print "downstream:",self.downstream
         print "count:     ",self.counts
         
 def Int2IP(ipnum):
