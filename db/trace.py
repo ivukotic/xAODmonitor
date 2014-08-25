@@ -5,6 +5,22 @@ from bson.objectid import ObjectId
 import json as simplejson
 import hashlib, time
 
+
+class IP:
+    def __init__(ip):
+        self.ip=ip
+        self.counts=0
+        self.upstream=[]
+        self.downstream=[]
+        self.name=""
+        self.lognitude=0
+        self.latitude=0
+    def prnt():
+        print "name:      ",self.name, "\tIP:",self.getIP(), "\tlat/lon: ",self.longitude, self.latitude
+        print "upstream:  ",self.upstream.join()
+        print "downstream:",self.downstream.join()
+        print "count:     ",self.counts
+        
 def Int2IP(ipnum):
     o1 = int(ipnum / 16777216) % 256
     o2 = int(ipnum / 65536) % 256
@@ -27,7 +43,10 @@ print 'rows:', res.count()
 
 print '====================== first 2 rows'
 c=res.find().limit(2)
-for r in c: print(r)
+for r in c: 
+    print(r)
+    for i in r['hops']:
+        print Int2IP(i[1]),i[2]
 
 #print '====================== where cputime <200'
 #c=res.find({ 'cputime':{'$lt':200} },{'cputime':1,'walltime':1})
@@ -74,26 +93,39 @@ print "hashes added in: ",time.time()-a, "seconds"
 
 
 print '======================== distinct paths'
-dp=res.distinct("phash")
-print 'unique paths:',len(dp)
+distinctPhashes=res.distinct("phash")
+print 'distinct hashes:',len(distinctPhashes)
         
         
 print '====================== distinct ips'
-tps={}
-uips=set()
+distinctPaths={}
+distinctIPs={}
 a=time.time()
 c=res.find({ "phash":{"$exists":True} })
 for r in c:
     ph=r['phash']
-    if ph in tps.keys(): continue 
-    tps[ph]=[]
+    if ph in distinctPaths.keys(): continue 
+    distinctPaths[ph]=[]
     for ip in r['hops']:
-        tps[ph]=ip[1]
-        uips.add(ip[1])
+        distinctPaths[ph].append(ip[1])
+        if ip[1] not in distinctIPs.keys():
+            distinctIPs[ip[1]] = IP(ip[1])
 
-print len(tps)
-print len(uips)
+print "distinct paths:",len(distinctPaths)
+print "distinct IPs:  ",len(distinctIPs)
+print "paths and ips found in: ",time.time()-a, "seconds"
 
+print '====================== filling IPs '
+for path in distinctPaths.values():
+    pl=len(path)
+    for h in range(pl):
+        ip=distinctIPs[path[h]]
+        if h>0: ip.upstream.append(path[h-1])
+        if h<(pl-2): ip.downstream.append(path[h+1])
+        ip.counts+=1
+
+
+    
 #print '====================== map reduce. on bhash. entries read per branch.'      
 #a=time.time()
 #lastrun=1404156881
