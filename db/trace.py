@@ -80,15 +80,16 @@ print 'unique paths:',len(dp)
         
 print '====================== distinct ips'
 tps={}
-uips=Set()
+uips=set()
 a=time.time()
 c=res.find({ "phash":{"$exists":True} })
 for r in c:
-    if c.phash in tps.keys: continue 
-    tps[c.phash]=[]
+    ph=c['phash']
+    if ph in tps.keys: continue 
+    tps[ph]=[]
     for ip in c.hops:
-        tps[c.phash]=ip
-        uips.add(ip)
+        tps[ph]=ip[1]
+        uips.add(ip[1])
 
 print len(tps)
 print len(uips)
