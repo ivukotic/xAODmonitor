@@ -13,7 +13,7 @@ class IP:
         self.upstream=[]
         self.downstream=[]
         self.name=""
-        self.lognitude=0
+        self.longitude=0
         self.latitude=0
     def getIP(self):
         o1 = int(self.ip / 16777216) % 256
