@@ -63,9 +63,9 @@ for r in c:
     phash = hashlib.md5(ipsj).hexdigest()
     #print phash
     co=res.update( {'_id':r['_id']}, {"$set":{'phash':phash}} )
-   if (co['ok']!=1.0):
-       print 'problem in adding the phash', co
-       break
+    if (co['ok']!=1.0):
+        print 'problem in adding the phash', co
+        break
 
 print "hashes added in: ",time.time()-a, "seconds"
         
