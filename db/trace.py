@@ -49,22 +49,25 @@ for r in c: print(r)
 #for r in c: print(r)
 
 
-#print '======================== adding hash manually'
-#a=time.time()
-#c=res.find({ "bhash":{"$exists":False} })
-#for r in c:
-#    brs=r['branches']
-    #print rid, brs
-#    brnames=''.join(brs.keys())
-    #print rid, brnames
-#    bhash = hashlib.md5(brnames).hexdigest()
-    #print bhash
-#    co=res.update( {'_id':r['_id']}, {"$set":{'bhash':bhash}} )
-#    if (co['ok']!=1.0):
-#        print 'problem in adding the bhash', co
-#        break
+print '======================== adding hash manually'
+a=time.time()
+c=res.find({ "phash":{"$exists":False} })
+for r in c:
+    hps=r['hops']
+    #print r, hps
+    ips=[]
+    for i in hps:
+        ips.append(i[2])
+    ipsj=''.join(ips)
+    #print r, ipsj
+    phash = hashlib.md5(ipsj).hexdigest()
+    #print phash
+    co=res.update( {'_id':r['_id']}, {"$set":{'phash':phash}} )
+   if (co['ok']!=1.0):
+       print 'problem in adding the phash', co
+       break
 
-#print "hashes added in: ",time.time()-a, "seconds"
+print "hashes added in: ",time.time()-a, "seconds"
         
 
 #print '================ make sure there is an index on bhash.'
