@@ -85,9 +85,9 @@ a=time.time()
 c=res.find({ "phash":{"$exists":True} })
 for r in c:
     ph=r['phash']
-    if ph in tps.keys: continue 
+    if ph in tps.keys(): continue 
     tps[ph]=[]
-    for ip in r.hops:
+    for ip in r['hops']:
         tps[ph]=ip[1]
         uips.add(ip[1])
 
