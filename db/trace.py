@@ -12,13 +12,23 @@ class IP:
     def __init__(self,ip):
         self.ip=ip
         self.counts=0
-        self.upstream=set()
-        self.downstream=set()
+        self.upstream={}
+        self.downstream={}
         self.name=""
         self.longitude=0
         self.latitude=0
         self.countrycode=""
         self.city=""
+    def addUpstream(self,ip):
+        if ip not in self.upstream:
+            self.upstream[ip]=1
+        else:
+            self.upstream[ip]+=1
+    def addDownstream(self,ip):
+        if ip not in self.downstream:
+            self.downstream[ip]=1
+        else:
+            self.downstream[ip]+=1
     def getIP(self):
         o1 = int(self.ip / 16777216) % 256
         o2 = int(self.ip / 65536) % 256
@@ -99,8 +109,8 @@ for path in distinctPaths.values():
     pl=len(path)
     for h in range(pl):
         ip=distinctIPs[path[h]]
-        if h>0: ip.upstream.add(path[h-1])
-        if h<(pl-2): ip.downstream.add(path[h+1])
+        if h>0: ip.addUpstream(path[h-1])
+        if h<(pl-2): ip.addDownstream(path[h+1])
         ip.counts+=1
 
 for ip in distinctIPs.values():
