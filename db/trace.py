@@ -7,7 +7,7 @@ from bson.objectid import ObjectId
 
 try: import simplejson as json
 except ImportError: import json
-
+        
 class IP:
     def __init__(self,ip):
         self.ip=ip
@@ -41,6 +41,7 @@ class IP:
         print "upstream:  ",self.upstream
         print "downstream:",self.downstream
         print "count:     ",self.counts
+
         
         
 
@@ -132,8 +133,10 @@ for ip in distinctIPs.values():
         ip.name=socket.gethostbyaddr(ip.getIP())[0]
     except socket.herror as e:
         print "# Can't determine client name", e
-           
+    
+nodes = db['nodes']
+nodes.remove({})       
 for ip in distinctIPs.values():
     ip.prnt()
-    
+    nodes.insert(ip.__dict__)
 
