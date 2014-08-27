@@ -12,8 +12,8 @@ class IP:
     def __init__(self,ip):
         self.ip=ip
         self.counts=0
-        self.upstream=Set()
-        self.downstream=Set()
+        self.upstream=set()
+        self.downstream=set()
         self.name=""
         self.longitude=0
         self.latitude=0
