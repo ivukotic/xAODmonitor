@@ -143,6 +143,6 @@ nodes = db['nodes']
        
 for ip in distinctIPs.values():
     ip.prnt()
-    njs=json.dumps(ip, default=jdefault))
+    njs=json.dumps(ip, default=jdefault)
     nodes.insert(json.loads(njs))
 
