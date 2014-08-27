@@ -1,10 +1,12 @@
 #!/usr/bin/env python
+import sys,hashlib, time, urllib2, socket
+
 from pymongo import MongoClient
 from bson.code import Code
 from bson.objectid import ObjectId
-import json as simplejson
-import hashlib, time
 
+try: import simplejson as json
+except ImportError: import json
 
 class IP:
     def __init__(self,ip):
@@ -15,6 +17,8 @@ class IP:
         self.name=""
         self.longitude=0
         self.latitude=0
+        self.countrycode=""
+        self.city=""
     def getIP(self):
         o1 = int(self.ip / 16777216) % 256
         o2 = int(self.ip / 65536) % 256
@@ -23,6 +27,7 @@ class IP:
         return '%(o1)s.%(o2)s.%(o3)s.%(o4)s' % locals()
     def prnt(self):
         print "name:      ",self.name, "\tIP:",self.getIP(), "\tlat/lon: ",self.longitude, self.latitude
+        print "country:   ",self.countrycode, "\tcity:",self.city
         print "upstream:  ",self.upstream
         print "downstream:",self.downstream
         print "count:     ",self.counts
@@ -98,6 +103,26 @@ for path in distinctPaths.values():
         if h<(pl-2): ip.downstream.append(path[h+1])
         ip.counts+=1
 
+for ip in distinctIPs.values():
+    try:
+        req = urllib2.Request("http://geoip.mwt2.org:4288/json/"+ip.getIP(), None)
+        opener = urllib2.build_opener()
+        f = opener.open(req,timeout=5)
+        res=json.load(f)
+        # print res
+        ip.longitude=res['longitude']
+        ip.latitude=res['latitude']
+        ip.countrycode=res['country_code']
+        ip.city=res['city']
+    except:
+        print "# Can't determine client coordinates using geoip.mwt2.org ", sys.exc_info()[0]
+
+for ip in distinctIPs.values():    
+    try:
+        ip.name=socket.gethostbyaddr(ip.getIP())[0]
+    except socket.herror as e:
+        print "# Can't determine client name", e
+           
 for ip in distinctIPs.values():
     ip.prnt()
     
