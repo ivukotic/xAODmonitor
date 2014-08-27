@@ -20,14 +20,37 @@ collection = db.testData
 
 tdb=client.trace
 tcollection = tdb.fax
+tnodes=tdb.nodes
 
+def jsonp(func):
+    def foo(self, *args, **kwargs):
+        callback, _ = None, None
+        if 'callback' in kwargs and '_' in kwargs:
+            callback, _ = kwargs['callback'], kwargs['_']
+            del kwargs['callback'], kwargs['_']
+        ret = func(self, *args, **kwargs)
+        if callback is not None:
+            ret = '%s(%s)' % (callback, simplejson.dumps(ret))
+        return ret
+    return foo   
+
+class IPs(object):
+    exposed = True
+    @jsonp
+    
+    def MyMethod(self, arg1):
+        print arg1
+        # requ=cherrypy.request.json
+        # nods=tnodes.find().limit(10)
+        return 'Works'    
+    
 class Trace(object):
     exposed = True
     @cherrypy.tools.json_in()
     
     def POST(self):
         ts=int(time.time())
-	result=cherrypy.request.json
+        result=cherrypy.request.json
         result["timestamp"]=ts
         tcollection.insert(result)
         return 'trace OK.'
@@ -35,6 +58,7 @@ class Trace(object):
 class xAODreceiver(object):
     exposed = True
     trace=Trace()
+    ips=IPs()
     
     @cherrypy.tools.accept(media='application/json')
     @cherrypy.tools.json_in()

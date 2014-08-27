@@ -139,10 +139,17 @@ for ip in distinctIPs.values():
     except socket.herror as e:
         print "# Can't determine client name", e
     
+    
+print '====================== storing IPs into mongo '
+    
 nodes = db['nodes']
-       
+nodes.remove({})
+   
 for ip in distinctIPs.values():
     ip.prnt()
     njs=json.dumps(ip, default=jdefault)
     nodes.insert(json.loads(njs))
+
+    
+print '====================== getting hops '
 
