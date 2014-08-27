@@ -12,8 +12,8 @@ class IP:
     def __init__(self,ip):
         self.ip=ip
         self.counts=0
-        self.upstream=[]
-        self.downstream=[]
+        self.upstream=Set()
+        self.downstream=Set()
         self.name=""
         self.longitude=0
         self.latitude=0
@@ -99,8 +99,8 @@ for path in distinctPaths.values():
     pl=len(path)
     for h in range(pl):
         ip=distinctIPs[path[h]]
-        if h>0: ip.upstream.append(path[h-1])
-        if h<(pl-2): ip.downstream.append(path[h+1])
+        if h>0: ip.upstream.add(path[h-1])
+        if h<(pl-2): ip.downstream.add(path[h+1])
         ip.counts+=1
 
 for ip in distinctIPs.values():
