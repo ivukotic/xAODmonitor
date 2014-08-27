@@ -7,6 +7,11 @@ from bson.objectid import ObjectId
 
 try: import simplejson as json
 except ImportError: import json
+
+def jdefault(o):
+    if isinstance(o, set):
+        return list(o)
+    return o.__dict__
         
 class IP:
     def __init__(self,ip):
@@ -135,8 +140,9 @@ for ip in distinctIPs.values():
         print "# Can't determine client name", e
     
 nodes = db['nodes']
-nodes.remove({})       
+       
 for ip in distinctIPs.values():
     ip.prnt()
-    nodes.insert(ip.__dict__)
+    njs=json.dumps(ip, default=jdefault))
+    nodes.insert(json.loads(njs))
 
