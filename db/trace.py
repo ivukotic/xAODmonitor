@@ -54,7 +54,7 @@ for r in c:
     #print r, hps
     ips=[]
     for i in hps:
-        ips.append(str(i[1]))
+        ips.append(str(i[0]))
     ipsj=''.join(ips)
     #print r, ipsj
     phash = hashlib.md5(ipsj).hexdigest()
@@ -81,9 +81,9 @@ for r in c:
     if ph in distinctPaths.keys(): continue 
     distinctPaths[ph]=[]
     for ip in r['hops']:
-        distinctPaths[ph].append(ip[1])
+        distinctPaths[ph].append(ip[0])
         if ip[1] not in distinctIPs.keys():
-            distinctIPs[ip[1]] = IP(ip[1])
+            distinctIPs[ip[0]] = IP(ip[0])
 
 print "distinct paths:",len(distinctPaths)
 print "distinct IPs:  ",len(distinctIPs)
