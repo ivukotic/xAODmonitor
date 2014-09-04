@@ -103,7 +103,7 @@ for r in c:
     distinctPaths[ph]=[]
     for ip in r['hops']:
         distinctPaths[ph].append(ip[0])
-        if ip[1] not in distinctIPs.keys():
+        if ip[0] not in distinctIPs.keys():
             distinctIPs[ip[0]] = IP(ip[0])
 
 print "distinct paths:",len(distinctPaths)
