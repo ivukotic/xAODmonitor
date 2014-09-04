@@ -41,7 +41,7 @@ class IP:
         except:
             print "# Can't determine client coordinates using geoip.mwt2.org ", sys.exc_info()[0]
         try:
-            ip.name=socket.gethostbyaddr(ip.getIP())[0]
+            self.name=socket.gethostbyaddr(self.getIP())[0]
         except socket.herror as e:
             print "# Can't determine client name", e 
     def addUpstream(self,ip):
