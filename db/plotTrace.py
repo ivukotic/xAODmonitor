@@ -140,9 +140,9 @@ for ip in distinctIPs.values():
     g.add_node(node)
 
 # add the edges
-for ip in distinctIPs.values():
-    for ip.
-    g.add_edge(pydot.Edge(pair[0],pair[1]))
+#for ip in distinctIPs.values():
+    #for ip.
+    #g.add_edge(pydot.Edge(pair[0],pair[1]))
 
 g.write(source+"_to_"+destination+'.svg',format='svg')
 g.write(source+"_to_"+destination+'.jpg',format='jpg')
