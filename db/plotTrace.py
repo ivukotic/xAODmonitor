@@ -126,8 +126,8 @@ for ip in distinctIPs.values():
 g=pydot.Dot(type='digraph', prog='neato',splines='true', overlap='false', size='20,20')
 
 
-loColor=gradi.HTMLColorToRGB('FFCC00')
-hiColor=gradi.HTMLColorToRGB('FF0000')
+#loColor=gradi.HTMLColorToRGB('FFCC00')
+#hiColor=gradi.HTMLColorToRGB('FF0000')
 #colorgradient=1.0/max(weight.values())
 
 for ip in distinctIPs.values():
