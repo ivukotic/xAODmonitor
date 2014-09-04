@@ -26,7 +26,7 @@ class IP:
         self.latitude=0
         self.countrycode=""
         self.city=""
-        getDetails()
+        self.getDetails()
     def getDetails(self):
         try:
             req = urllib2.Request("http://geoip.mwt2.org:4288/json/"+self.getIP(), None)
