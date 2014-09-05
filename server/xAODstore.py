@@ -100,12 +100,10 @@ class Network(object):
                     f=n
                     t=r['nodes'][c+1]
                     found=0
-                    for (a=0;a<len(ed);a++){
-                        if (ed[a][0]==f and ed[a][1]==t){
+                    for a in ed:
+                        if (a[0]==f and a[1]==t):
                             found=1
-                            break;
-                        }
-                    }
+                            break
                     if (!found)
                         ed.append([n,t])
                 c+=1
