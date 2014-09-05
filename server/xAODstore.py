@@ -95,7 +95,7 @@ class Network(object):
             c=0
             for n in r['nodes']:
                 if n not in no:
-                    no.push(n)
+                    no.append(n)
                 # if c<(len(r['nodes'])-1):
                 #
                 # c+=1
