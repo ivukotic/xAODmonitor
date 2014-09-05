@@ -104,7 +104,7 @@ class Network(object):
                         if (a[0]==f and a[1]==t):
                             found=1
                             break
-                    if !found:
+                    if found==0:
                         ed.append([n,t])
                 c+=1
         
