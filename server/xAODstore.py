@@ -97,7 +97,17 @@ class Network(object):
                 if n not in no:
                     no.append(n)
                 if c<(len(r['nodes'])-1):
-                    ed.append([n,r['nodes'][c+1]])
+                    f=n
+                    t=r['nodes'][c+1]
+                    found=0
+                    for (a=0;a<len(ed);a++){
+                        if (ed[a][0]==f and ed[a][1]==t){
+                            found=1
+                            break;
+                        }
+                    }
+                    if (!found)
+                        ed.append([n,t])
                 c+=1
         
         for sn in no:
