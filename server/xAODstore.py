@@ -97,7 +97,7 @@ class Network(object):
                 if n not in no:
                     no.append(n)
                 if c<(len(r['nodes'])-1):
-                    ed.append(n,r['nodes'][c+1])
+                    ed.append([n,r['nodes'][c+1]])
                 c+=1
         
         for sn in no:
