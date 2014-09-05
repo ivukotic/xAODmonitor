@@ -5,9 +5,10 @@
 # cat d.json 
 # { "method" : "guru.test", "params" : [ "Guru" ], "id" : 123 }
 # curl -H "Accept: application/json" -X post "http://db.mwt2.org:8080/ips"
-# curl --data "source=MWT2&destination=AGLT2" -H "Accept: application/json" -X post "http://db.mwt2.org:8080/network"
+# curl  -H "Accept: application/json" -X post "http://db.mwt2.org:8080/network?source=MWT2&destination=AGLT2"
 
 import random
+import sys,hashlib, urllib2, socket
 import string
 import cherrypy
 import time
@@ -112,8 +113,7 @@ class IPs(object):
         # requ=cherrypy.request.json
         nods=tnodes.find()
         ret=[]
-        
-	    for n in nods:
+        for n in nods:
             upstream=[]
             downstream=[]
             if n.has_key("upstream"): 
