@@ -93,6 +93,7 @@ class Network(object):
         ed=[]
         for r in rows:
             c=0
+            rate=r['totRate']/r['measurements']/10.0
             for n in r['nodes']:
                 if n not in no:
                     no.append(n)
@@ -102,11 +103,11 @@ class Network(object):
                     found=0
                     for a in ed:
                         if (a[0]==f and a[1]==t):
-                            if a[2]<r['rate']: a[2]=r['rate']/10.0
+                            if a[2]<rate: a[2]=rate
                             found=1
                             break
                     if found==0:
-                        ed.append([n,t,r['rate']/10.0])
+                        ed.append([n,t,rate])
                 c+=1
         
         for sn in no:
