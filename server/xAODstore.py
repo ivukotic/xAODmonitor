@@ -4,15 +4,16 @@
 # curl -H 'Content-Type: application/json' -d @d.json "http://db.mwt2.org:8080/trace"
 # cat d.json 
 # { "method" : "guru.test", "params" : [ "Guru" ], "id" : 123 }
+# curl -H "Accept: application/json" -X post "http://db.mwt2.org:8080/ips"
 
 import random
 import string
-import json as simplejson
 import cherrypy
 import time
 import json as simplejson
 
 from pymongo import MongoClient
+from bson.json_util import dumps
 
 client = MongoClient('localhost', 27017)
 db=client.xAOD
@@ -22,27 +23,34 @@ tdb=client.trace
 tcollection = tdb.fax
 tnodes=tdb.nodes
 
-def jsonp(func):
-    def foo(self, *args, **kwargs):
-        callback, _ = None, None
-        if 'callback' in kwargs and '_' in kwargs:
-            callback, _ = kwargs['callback'], kwargs['_']
-            del kwargs['callback'], kwargs['_']
-        ret = func(self, *args, **kwargs)
-        if callback is not None:
-            ret = '%s(%s)' % (callback, simplejson.dumps(ret))
-        return ret
-    return foo   
-
 class IPs(object):
     exposed = True
-    @jsonp
-    
-    def MyMethod(self, arg1):
-        print arg1
+    @cherrypy.tools.json_out()
+ 
+    def POST(self):
         # requ=cherrypy.request.json
-        # nods=tnodes.find().limit(10)
-        return 'Works'    
+        nods=tnodes.find()
+        ret=[]
+        #for n in nods:
+	#    d=dumps(n)
+        #    ret.append(d)
+	for n in nods:
+	     upstream=[]
+	     downstream=[]
+             if n.has_key("upstream"): 
+	         up=n["upstream"]
+	     else:
+                 up=[]
+	     for i in up:  upstream.append([int(i),up[i]])
+	     if n.has_key("downstream"):
+	         down=n["downstream"]
+             else:
+                 down=[]
+	     for i in down:  downstream.append([int(i),down[i]])
+             lo=n["longitude"]
+	     la=n["latitude"]
+             ret.append({ "ip":n["ip"], "name":n["name"], "long":lo, "lat":la, "up":upstream, "down":downstream })
+        return ret    
     
 class Trace(object):
     exposed = True
