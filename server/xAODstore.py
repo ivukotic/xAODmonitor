@@ -100,7 +100,7 @@ class Network(object):
                     distinctIPs[h[0]] = IP(h[0])
         
         for n in distinctIPs.values():
-               ret.append({ "ip":n.ip, "name":n.name, "up":n.upstream, "down":n.downstream })
+               ret.append({ "ip":n.ip,"sip":n.getIP(),"name":n.name, "up":n.upstream, "down":n.downstream })
                
         return ret    
 

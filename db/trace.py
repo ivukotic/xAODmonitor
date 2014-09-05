@@ -12,8 +12,24 @@ def jdefault(o):
     if isinstance(o, set):
         return list(o)
     return o.__dict__
+
+class Path:
+    def __init__(self, h, s, d, r):
+        self.hash=h
+        self.source=s
+        self.destination=d
+        self.measurements=1
+        self.totRate=r
+        self.nodes=[]
+    def addMeasurement(self, r):
+        self.totRate+=r
+        self.measurements+=1
+    def getAvgRate(self):
+        return self.totRate/self.measurements
+    def prnt(self):
+        print "source:",self.source,"\tdestination:",self.destination,"\tmeasurements:",self.measurements,"\tavg. Rate:",self.getAvgRate(),"\nnodes:",self.nodes
         
-class IP:
+class Node:
     def __init__(self,ip):
         self.ip=ip
         self.counts=0
@@ -67,7 +83,7 @@ for r in c:
     print(r)
 
 
-print '======================== adding hash manually'
+print '======================== adding hashes manually'
 a=time.time()
 c=res.find({ "phash":{"$exists":False} })
 for r in c:
@@ -93,62 +109,69 @@ print 'distinct hashes:',len(distinctPhashes)
         
         
 print '====================== distinct ips'
-distinctPaths={}
-distinctIPs={}
+paths={}
 a=time.time()
 c=res.find({ "phash":{"$exists":True} })
 for r in c:
     ph=r['phash']
-    if ph in distinctPaths.keys(): continue 
-    distinctPaths[ph]=[]
-    for ip in r['hops']:
-        distinctPaths[ph].append(ip[0])
-        if ip[0] not in distinctIPs.keys():
-            distinctIPs[ip[0]] = IP(ip[0])
+    if ph in paths.keys(): 
+        paths[ph].addMeasurement(r["rate"])
+    else:
+        np=path(ph,r['source'],r['destination'],r['rate'])
+        for no in r['hops']:
+            np.nodes.append(no[0])
+        paths[ph]=np    
 
-print "distinct paths:",len(distinctPaths)
-print "distinct IPs:  ",len(distinctIPs)
+print "distinct paths:",len(paths)
+
+nodes={}
+for p in paths.values():
+    for n in p.nodes:
+        if n not in nodes:
+            nodes[n]=Node(n)
+            
+print "distinct IPs:  ",len(nodes)
 print "paths and ips found in: ",time.time()-a, "seconds"
 
 print '====================== filling IPs '
-for path in distinctPaths.values():
-    pl=len(path)
-    for h in range(pl):
-        ip=distinctIPs[path[h]]
-        if h>0: ip.addUpstream(path[h-1])
-        if h<(pl-2): ip.addDownstream(path[h+1])
-        ip.counts+=1
+for p in paths.values():
+    c=0
+    for n in p.nodes:
+        if c>0: nodes[n].addUpstream(path[c-1])
+        if c<(len(p.nodes)-2): nodes[n].addDownstream(path[c+1])
+        nodes[n].counts+=1
+        c+=1
 
-for ip in distinctIPs.values():
+for n in nodes.values():
     try:
-        req = urllib2.Request("http://geoip.mwt2.org:4288/json/"+ip.getIP(), None)
+        req = urllib2.Request("http://geoip.mwt2.org:4288/json/"+n.getIP(), None)
         opener = urllib2.build_opener()
         f = opener.open(req,timeout=5)
         res=json.load(f)
         # print res
-        ip.longitude=res['longitude']
-        ip.latitude=res['latitude']
-        ip.countrycode=res['country_code']
-        ip.city=res['city']
+        n.longitude=res['longitude']
+        n.latitude=res['latitude']
+        n.countrycode=res['country_code']
+        n.city=res['city']
     except:
         print "# Can't determine client coordinates using geoip.mwt2.org ", sys.exc_info()[0]
 
-for ip in distinctIPs.values():    
+for n in nodes.values():    
     try:
-        ip.name=socket.gethostbyaddr(ip.getIP())[0]
+        n.name=socket.gethostbyaddr(n.getIP())[0]
     except socket.herror as e:
         print "# Can't determine client name", e
     
     
-print '====================== storing IPs into mongo '
+print '====================== storing nodes into mongo '
     
-nodes = db['nodes']
-nodes.remove({})
+dbnodes = db['nodes']
+dbnodes.remove({})
    
-for ip in distinctIPs.values():
-    ip.prnt()
-    njs=json.dumps(ip, default=jdefault)
-    nodes.insert(json.loads(njs))
+for n in nodess.values():
+    n.prnt()
+    njs=json.dumps(n, default=jdefault)
+    dbnodes.insert(json.loads(njs))
 
     
 print '====================== getting hops '
