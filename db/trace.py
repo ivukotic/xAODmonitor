@@ -117,7 +117,7 @@ for r in c:
     if ph in paths.keys(): 
         paths[ph].addMeasurement(r["rate"])
     else:
-        np=path(ph,r['source'],r['destination'],r['rate'])
+        np=Path(ph,r['source'],r['destination'],r['rate'])
         for no in r['hops']:
             np.nodes.append(no[0])
         paths[ph]=np    
@@ -137,8 +137,8 @@ print '====================== filling IPs '
 for p in paths.values():
     c=0
     for n in p.nodes:
-        if c>0: nodes[n].addUpstream(path[c-1])
-        if c<(len(p.nodes)-2): nodes[n].addDownstream(path[c+1])
+        if c>0: nodes[n].addUpstream(p.nodes[c-1])
+        if c<(len(p.nodes)-2): nodes[n].addDownstream(p.nodes[c+1])
         nodes[n].counts+=1
         c+=1
 
@@ -168,7 +168,7 @@ print '====================== storing nodes into mongo '
 dbnodes = db['nodes']
 dbnodes.remove({})
    
-for n in nodess.values():
+for n in nodes.values():
     n.prnt()
     njs=json.dumps(n, default=jdefault)
     dbnodes.insert(json.loads(njs))
