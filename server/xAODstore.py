@@ -85,7 +85,7 @@ class Network(object):
     @cherrypy.tools.json_out()
  
     def POST(self,source, destination):
-        rows=tpaths.find({"$and": [ {"from":source} , {"to":destination} ] });
+        rows=tpaths.find({"$and": [ {"source":source} , {"destination":destination} ] });
         ret={}
         ret['nodes']=[]
         ret['edges']=[]
