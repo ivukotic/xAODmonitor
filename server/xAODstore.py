@@ -114,7 +114,7 @@ class Network(object):
             n=IP(sn)
             ret['nodes'].append({ "ip":n.ip,"sip":n.getIP(),"name":n.name, "up":n.upstream, "down":n.downstream })
         for se in ed:    
-            ret['edges'].append({"from":se[0],"to":se[1],"value":se[2],"title":"%0.4f"%se[2]+" MB/s\n"+str(se[4])+"measurements."}); 
+            ret['edges'].append({"from":se[0],"to":se[1],"value":se[2],"title":"%0.4f"%se[2]+" MB/s\n"+str(se[3])+"measurements."}); 
         return ret    
 
 
