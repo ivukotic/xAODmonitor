@@ -102,17 +102,18 @@ class Network(object):
                     found=0
                     for a in ed:
                         if (a[0]==f and a[1]==t):
+                            if a[2]<r['rate']: a[2]=r['rate']/10.0
                             found=1
                             break
                     if found==0:
-                        ed.append([n,t])
+                        ed.append([n,t,r['rate']/10.0])
                 c+=1
         
         for sn in no:
             n=IP(sn)
             ret['nodes'].append({ "ip":n.ip,"sip":n.getIP(),"name":n.name, "up":n.upstream, "down":n.downstream })
         for se in ed:    
-            ret['edges'].append({"from":se[0],"to":se[1]}); 
+            ret['edges'].append({"from":se[0],"to":se[1],"width":se[2]}); 
         return ret    
 
 
