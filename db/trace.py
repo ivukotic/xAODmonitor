@@ -174,5 +174,11 @@ for n in nodes.values():
     dbnodes.insert(json.loads(njs))
 
     
-print '====================== getting hops '
-
+print '====================== storing paths into mongo '
+dbpaths = db['paths']
+dbpaths.remove({})
+   
+for p in paths.values():
+    p.prnt()
+    pjs=json.dumps(p, default=jdefault)
+    dbpaths.insert(json.loads(pjs))

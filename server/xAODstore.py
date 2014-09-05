@@ -84,7 +84,7 @@ class Network(object):
     @cherrypy.tools.json_out()
  
     def POST(self,source, destination):
-        # rows=tcollection.find({"$and": [ {"from":source} , {"to":destination}, {"phash":{"$exists":True}} ] });
+        rows=tcollection.find({"$and": [ {"from":source} , {"to":destination}, {"phash":{"$exists":True}} ] });
         ret=[]
         
         distinctIPs={}
