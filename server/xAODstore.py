@@ -84,23 +84,22 @@ class Network(object):
     @cherrypy.tools.json_out()
  
     def POST(self,source, destination):
-        # requ=cherrypy.request.json
-        rows=tcollection.find({"$and": [ {"from":source} , {"to":destination}, {"phash":{"$exists":True}} ] });
+        # rows=tcollection.find({"$and": [ {"from":source} , {"to":destination}, {"phash":{"$exists":True}} ] });
         ret=[]
         
-        distinctIPs={}
-        distinctPaths={}
-        for r in rows:
-            ph=r['phash']
-            if ph in distinctPaths.keys(): continue 
-            distinctPaths[ph]=[]
-            for h in r['hops']:
-                distinctPaths[ph].append(h[0])
-                if h[0] not in distinctIPs.keys():
-                    distinctIPs[h[0]] = IP(h[0])
-        
-        for n in distinctIPs.values():
-               ret.append({ "ip":n.ip,"sip":n.getIP(),"name":n.name, "up":n.upstream, "down":n.downstream })
+        # distinctIPs={}
+        # distinctPaths={}
+        # for r in rows:
+        #     ph=r['phash']
+        #     if ph in distinctPaths.keys(): continue
+        #     distinctPaths[ph]=[]
+        #     for h in r['hops']:
+        #         distinctPaths[ph].append(h[0])
+        #         if h[0] not in distinctIPs.keys():
+        #             distinctIPs[h[0]] = IP(h[0])
+        #
+        # for n in distinctIPs.values():
+        #        ret.append({ "ip":n.ip,"sip":n.getIP(),"name":n.name, "up":n.upstream, "down":n.downstream })
                
         return ret    
 
