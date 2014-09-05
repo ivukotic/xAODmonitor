@@ -24,6 +24,7 @@ collection = db.testData
 tdb=client.trace
 tcollection = tdb.fax
 tnodes=tdb.nodes
+tpaths=tdb.paths
 
 
 class IP:
@@ -84,22 +85,24 @@ class Network(object):
     @cherrypy.tools.json_out()
  
     def POST(self,source, destination):
-        rows=tcollection.find({"$and": [ {"from":source} , {"to":destination}, {"phash":{"$exists":True}} ] });
-        ret=[]
-        
-        distinctIPs={}
-        distinctPaths={}
+        rows=tpaths.find({"$and": [ {"from":source} , {"to":destination} ] });
+        ret={}
+        ret['nodes']=[]
+        ret['edges']=[]
+        no=[]
+        ed=[]
         for r in rows:
-            ph=r['phash']
-            if ph in distinctPaths.keys(): continue 
-            distinctPaths[ph]=[]
-            for h in r['hops']:
-                distinctPaths[ph].append(h[0])
-                if h[0] not in distinctIPs.keys():
-                    distinctIPs[h[0]] = IP(h[0])
+            c=0
+            for n in r['nodes']:
+                if n not in no:
+                    no.push(n)
+                # if c<(len(r['nodes'])-1):
+                #
+                # c+=1
         
-        for n in distinctIPs.values():
-            ret.append({ "ip":n.ip,"sip":n.getIP(),"name":n.name, "up":n.upstream, "down":n.downstream })
+        for sn in no:
+            n=IP(sn)
+            ret['no'].append({ "ip":n.ip,"sip":n.getIP(),"name":n.name, "up":n.upstream, "down":n.downstream })
                
         return ret    
 

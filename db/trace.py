@@ -138,7 +138,7 @@ for p in paths.values():
     c=0
     for n in p.nodes:
         if c>0: nodes[n].addUpstream(p.nodes[c-1])
-        if c<(len(p.nodes)-2): nodes[n].addDownstream(p.nodes[c+1])
+        if c<(len(p.nodes)-1): nodes[n].addDownstream(p.nodes[c+1])
         nodes[n].counts+=1
         c+=1
 
