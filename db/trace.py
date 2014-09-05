@@ -117,7 +117,7 @@ for r in c:
     if ph in paths.keys(): 
         paths[ph].addMeasurement(r["rate"])
     else:
-        np=Path(ph,r['source'],r['destination'],r['rate'])
+        np=Path(ph,r['from'],r['to'],r['rate'])
         for no in r['hops']:
             np.nodes.append(no[0])
         paths[ph]=np    
