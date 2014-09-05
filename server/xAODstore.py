@@ -96,14 +96,15 @@ class Network(object):
             for n in r['nodes']:
                 if n not in no:
                     no.append(n)
-                # if c<(len(r['nodes'])-1):
-                #
-                # c+=1
+                if c<(len(r['nodes'])-1):
+                    ed.append(n,r['nodes'][c+1])
+                c+=1
         
         for sn in no:
             n=IP(sn)
             ret['nodes'].append({ "ip":n.ip,"sip":n.getIP(),"name":n.name, "up":n.upstream, "down":n.downstream })
-               
+        for se in ed:    
+            ret['edges'].append({"from":se[0],"to":se[1]}); 
         return ret    
 
 
