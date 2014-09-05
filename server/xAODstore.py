@@ -102,7 +102,7 @@ class Network(object):
         
         for sn in no:
             n=IP(sn)
-            ret['no'].append({ "ip":n.ip,"sip":n.getIP(),"name":n.name, "up":n.upstream, "down":n.downstream })
+            ret['nodes'].append({ "ip":n.ip,"sip":n.getIP(),"name":n.name, "up":n.upstream, "down":n.downstream })
                
         return ret    
 
