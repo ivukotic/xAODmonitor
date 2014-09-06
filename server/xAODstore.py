@@ -98,6 +98,17 @@ class Network(object):
         for r in rows:
             c=0
             rate=r['totRate']/r['measurements']
+            
+            doubleZero=1
+            while doubleZero:
+                doubleZero=0
+                for ni in range(len(r['nodes'])-1):
+                    if r['nodes'][ni]==0 and r['nodes'][ni+1]==0:
+                        doubleZero=ni
+                        break
+                if doubleZero!=0:
+                    del r['nodes'][doubleZero] 
+                    
             for ni in range(len(r['nodes'])):
                 if r['nodes'][ni]==0: 
                     r['nodes'][ni]=starCounter
