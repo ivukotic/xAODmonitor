@@ -40,6 +40,9 @@ class IP:
         self.city=""
         self.getDetails()
     def getDetails(self):
+        if self.ip<256: 
+            self.name="*"+str(self.ip)
+            return
         try:
             req = urllib2.Request("http://geoip.mwt2.org:4288/json/"+self.getIP(), None)
             opener = urllib2.build_opener()
@@ -91,9 +94,14 @@ class Network(object):
         ret['edges']=[]
         no=[]
         ed=[]
+        starCounter=0
         for r in rows:
             c=0
             rate=r['totRate']/r['measurements']
+            for n in r['nodes']:
+                if n==0: 
+                    n=starCounter
+                    starCounter+=1
             for n in r['nodes']:
                 if n not in no:
                     no.append(n)
