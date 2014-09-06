@@ -99,6 +99,7 @@ class Network(object):
             c=0
             rate=r['totRate']/r['measurements']
             
+            #removing double stars
             doubleZero=1
             while doubleZero:
                 doubleZero=0
@@ -108,11 +109,13 @@ class Network(object):
                         break
                 if doubleZero!=0:
                     del r['nodes'][doubleZero] 
-                    
+            
+            # naming stars differently        
             for ni in range(len(r['nodes'])):
                 if r['nodes'][ni]==0: 
                     r['nodes'][ni]=starCounter
                     starCounter+=1
+                    
             for n in r['nodes']:
                 if n not in no:
                     no.append(n)
@@ -122,7 +125,9 @@ class Network(object):
                     found=0
                     for a in ed:
                         if (a[0]==f and a[1]==t):
-                            if a[2]<rate: a[2]=rate
+                            if a[2]<rate: 
+                                a[2]=rate
+                                a[3]=r['measurements']
                             found=1
                             break
                     if found==0:
