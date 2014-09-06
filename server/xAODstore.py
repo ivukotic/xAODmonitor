@@ -98,9 +98,9 @@ class Network(object):
         for r in rows:
             c=0
             rate=r['totRate']/r['measurements']
-            for n in r['nodes']:
-                if n==0: 
-                    n=starCounter
+            for ni in range(len(r['nodes'])):
+                if r['nodes'][ni]==0: 
+                    r['nodes'][ni]=starCounter
                     starCounter+=1
             for n in r['nodes']:
                 if n not in no:
