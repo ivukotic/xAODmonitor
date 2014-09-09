@@ -7,6 +7,8 @@
 # curl -H "Accept: application/json" -X post "http://db.mwt2.org:8080/ips"
 # curl  -H "Accept: application/json" -X post "http://db.mwt2.org:8080/network?source=MWT2&destination=AGLT2"
 
+# curl  -H "Accept: application/json" -X post "http://db.mwt2.org:8080/bicdistincts?interval=123
+
 import random
 import sys,hashlib, urllib2, socket
 import string
@@ -26,8 +28,8 @@ tcollection = tdb.fax
 tnodes=tdb.nodes
 tpaths=tdb.paths
 
-bicDB=client.visualization_db
-bic=bicDB.condor_records
+bicDB=client.crow_test
+bic=bicDB.jobs
 
 class BICdistincts(object):
     exposed = True
@@ -36,18 +38,17 @@ class BICdistincts(object):
     def POST(self,interval):
 
         ret={}
-        ret['States']=[]
-        ret['Users']=[]
-        # ret['Tasks']=Set()
-        
-        # rows=bic.distinct("State",{ 'timestamp':{$gt: interval}})
-        ret['States']=bic.distinct("State")
-        ret['Users']=bic.distinct("RemoteOwner")
-        # ids=bic.distinct("_id")
-        # for r in range(len(ids)):
-        #     tid=int(ids[r].split(".")[0])
-        #     if tid not in ret['Tasks']:
-        #         ret['Tasks'].append(tid)
+        ret['LastJobStatuses']=[]
+        ret['Tasks']=[]
+        ret['ProjectNames']=[]
+        fromTime=time.time()-interval
+        rows=bic.find({"latest.QDate":{"$gt":fromTime}},{"latest.LastJobStatus":1,"latest.ProjectName":1,"latest.User":1})
+        ret['LastJobStatuses']=rows.distinct("latest.LastJobStatus")
+        ret['ProjectNames']=rows.distinct("latest.ProjectName")
+        users=set()
+        for r in rows:
+            users.add(r['latest']['User'].split("@")[0])
+        ret['Users']=list(users)
         return ret
 
 class IP:
