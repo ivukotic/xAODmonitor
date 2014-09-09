@@ -26,6 +26,29 @@ tcollection = tdb.fax
 tnodes=tdb.nodes
 tpaths=tdb.paths
 
+bicDB=client.visualization_db
+bic=bicDB.condor_records
+
+class BICdistincts(object):
+    exposed = True
+    @cherrypy.tools.json_out()
+    
+    def POST(self,interval):
+
+        ret={}
+        ret['States']=[]
+        ret['Users']=[]
+        # ret['Tasks']=Set()
+        
+        # rows=bic.distinct("State",{ 'timestamp':{$gt: interval}})
+        ret['States']=bic.distinct("State")
+        ret['Users']=bic.distinct("RemoteOwner")
+        # ids=bic.distinct("_id")
+        # for r in range(len(ids)):
+        #     tid=int(ids[r].split(".")[0])
+        #     if tid not in ret['Tasks']:
+        #         ret['Tasks'].append(tid)
+        return ret
 
 class IP:
     def __init__(self,ip):
@@ -184,6 +207,7 @@ class xAODreceiver(object):
     trace=Trace()
     ips=IPs()
     network=Network()
+    bicdistincts=BICdistincts()
     
     @cherrypy.tools.accept(media='application/json')
     @cherrypy.tools.json_in()
