@@ -70,7 +70,7 @@ class BICperProject(object):
         for p in projects:
             pData[p]=[]
             for b in range(bins):
-                pData[p].append([ (fromTime + b * inter)*1000 , 0 ])
+                pData[p].append([ (fromTime + b * binwidth)*1000 , 0 ])
             
         for r in rows:
             proj=r["latest"]["ProjectName"]
