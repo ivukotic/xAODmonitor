@@ -62,28 +62,19 @@ class BICperProject(object):
             moments=set()
             for d in da:
                 moments.add(d[0])
-            print 'moments:',len(moments)
             moms=sorted(moments)
+            print 'moments:',moms
+            
             for m  in moms:
-                skip=False
                 for d in range(len(da)):
                     el=da[d]
-                    if el[0]>m:
-                        skip=True
-                        break
-                    if el[0]<m:
-                        print "el<m should not happen"
-                        continue
-                    if el[1]==2: 
-                        currVal+=1
-                        del da[d]
-                        break
-                    if el[0]>2:
-                        currVal-=1
-                        del da[d]
-                        break
-                if not skip:    
+                    if el[0]!=m: continue
+                    if el[1]==2: currVal+=1
+                    if el[0]>2: currVal-=1
+                    del da[d]  
                     ser['data'].append( [m*1000,currVal] )
+                    break   
+                    
                 
             ret['plot'].append(ser)         
         #[{"name":"success","data":[[1410238880201,67],...]},{} ]
