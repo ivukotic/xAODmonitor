@@ -43,7 +43,7 @@ class BICperProject(object):
         fullInterval=int(interval)
         ct=int(time.time())
         fromTime=ct-fullInterval
-        bins=600.0
+        bins=600
         inter=(float(interval))/bins
         
         
@@ -69,7 +69,7 @@ class BICperProject(object):
         for p in projects:
             pData[p]=[]
             for b in range(bins):
-                pData[p].append([r(1000*(fromTime + b * inter)) , 0])
+                pData[p].append([int(1000*(fromTime + b * inter)) , 0])
             
         for r in rows:
             proj=r["latest"]["ProjectName"]
