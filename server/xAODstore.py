@@ -58,22 +58,33 @@ class BICperProject(object):
             ser['data']=[]
             da=sorted(data[p], key=itemgetter(0,1))#, reverse=True)
             print p, "data points: ",da
-            currVal=0
-            moments=set()
-            for d in da:
-                moments.add(d[0])
-            moms=sorted(moments)
-            print 'moments:',moms
+
+            running=0
+            for tb in range(bins):
+                binle=fromTime+tb*inter
+                binhe=binle+inter
+                for d in da:
+                    if d[0]>binle and d[0]<binhe:
+                        if d[1]==2: running+=1
+                        if d[1]>2: running-=1
+                ser['data'].append( [binle*1000,running] )    
             
-            for m  in moms:
-                for d in range(len(da)):
-                    el=da[d]
-                    if el[0]!=m: continue
-                    if el[1]==2: currVal+=1
-                    if el[1]>2: currVal-=1
-                    #del da[d]  
-                    ser['data'].append( [m*1000,currVal] )
-                    break   
+            # currVal=0
+            # moments=set()
+            # for d in da:
+            #     moments.add(d[0])
+            # moms=sorted(moments)
+            # print 'moments:',moms
+            #
+            # for m  in moms:
+            #     for d in range(len(da)):
+            #         el=da[d]
+            #         if el[0]!=m: continue
+            #         if el[1]==2: currVal+=1
+            #         if el[1]>2: currVal-=1
+            #         #del da[d]
+            #         ser['data'].append( [m*1000,currVal] )
+            #         break  
                     
                 
             ret['plot'].append(ser)         
