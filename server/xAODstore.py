@@ -44,7 +44,7 @@ class BICperProject(object):
         ct=int(time.time())
         fromTime=ct-intInterval
         bins=600
-        binwidth=interval/bins
+        binwidth=intInterval/bins
         
         
         # QDate = 1410041462
