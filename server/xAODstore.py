@@ -46,48 +46,47 @@ class BICperProject(object):
         bins=600.0
         inter=(float(interval))/bins
         
-        rows=bic.find({"$and":[  {"latest.EnteredCurrentStatus":{"$gt":fromTime}}, {'latest.ProjectName':{'$exists': True}},  {'latest.ProjectName':'IceCube'}, {"latest.JobStatus":{"$gt":1L}} ]},{"latest.JobStatus":1,"latest.ProjectName":1,"latest.EnteredCurrentStatus":1})
-        projects=rows.distinct("latest.ProjectName")
-        data={}
-        for p in projects: data[p]=[]
+        
+        # QDate = 1410041462
+        # JobCurrentStartDate = 1410041468
+         # JobStartDate = 1410041468
+        # LastMatchTime = 1410041468
+        # JobCurrentStartExecutingDate = 1410041470
+         # CompletionDate = 1410041471
+        # EnteredCurrentStatus = 1410041471
+        # JobFinishedHookDone = 1410041471
+        # LastJobLeaseRenewal = 1410041471
+        
+        #select jobs that have not CompletionDate and onese that finished after fromTime
+        jobSel={"$or":[ {'latest.CompletionDate':{'$exists':False}}, {'latest.CompletionDate':{"$gt":fromTime}} ]}
+        projSel={'latest.ProjectName':'IceCube'}
+        rows=bic.find({"$and":[  jobSel, projSel ]},{"latest.JobStatus":1,"latest.ProjectName":1,"latest.JobStartDate":1,"latest.CompletionDate":1})
+        
+        
+        # adding 
+        projects=rows.distinct("latest.ProjectName") 
+        pData={}
+        for p in projects:
+            pData[p]=[]
+            for b in range(bins):
+                pData[p].append([r(1000*(fromTime + b * inter)) , 0])
+            
         for r in rows:
-            data[r['latest']['ProjectName']].append((r["latest"]["EnteredCurrentStatus"],r["latest"]["JobStatus"]))
+            proj=r["latest"]["ProjectName"]
+            stime=r["latest"]["JobStartDate"]*1000
+            if "CompletionDate" in r["latest"]:
+                etime=r["latest"]["CompletionDate"]*1000
+            else:
+                etime=ct*1000
+            for b in range(bins):
+                if pData[proj][b][0]>stime and pData[proj][b][0]<etime: pData[proj][b][1]+=1
+         
         for p in projects:
             ser={}
             ser['name']=p
-            ser['data']=[]
-            da=sorted(data[p], key=itemgetter(0,1))#, reverse=True)
-            print p, "data points: ",da
-
-            running=0
-            for tb in range(bins):
-                binle=fromTime+tb*inter
-                binhe=binle+inter
-                for d in da:
-                    if d[0]>binle and d[0]<binhe:
-                        if d[1]==2: running+=1
-                        if d[1]>2: running-=1
-                ser['data'].append( [binle*1000,running] )    
+            ser['data']=pData[proj]
+            ret['plot'].append(ser)
             
-            # currVal=0
-            # moments=set()
-            # for d in da:
-            #     moments.add(d[0])
-            # moms=sorted(moments)
-            # print 'moments:',moms
-            #
-            # for m  in moms:
-            #     for d in range(len(da)):
-            #         el=da[d]
-            #         if el[0]!=m: continue
-            #         if el[1]==2: currVal+=1
-            #         if el[1]>2: currVal-=1
-            #         #del da[d]
-            #         ser['data'].append( [m*1000,currVal] )
-            #         break  
-                    
-                
-            ret['plot'].append(ser)         
         #[{"name":"success","data":[[1410238880201,67],...]},{} ]
         print ret        
         return ret
