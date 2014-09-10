@@ -49,7 +49,6 @@ class BICperProject(object):
         ret={}
         ret['plot']=[]
         
-        intInterval=int(interval)
         ct=int(time.time())
         fromTime=ct-intInterval
         bins=600
