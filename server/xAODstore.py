@@ -59,8 +59,9 @@ class BICperProject(object):
         
         #select jobs that have not CompletionDate and onese that finished after fromTime
         jobSel={"$or":[ {'latest.CompletionDate':{'$exists':False}}, {'latest.CompletionDate':{"$gt":fromTime}} ]}
-        projSel={'latest.ProjectName':'IceCube'}
-        rows=bic.find({"$and":[  jobSel, projSel ]},{"latest.JobStatus":1,"latest.ProjectName":1,"latest.JobStartDate":1,"latest.CompletionDate":1})
+        #projSel={'latest.ProjectName':'IceCube'}
+        #rows=bic.find({"$and":[  jobSel, projSel ]},{"latest.JobStatus":1,"latest.ProjectName":1,"latest.JobStartDate":1,"latest.CompletionDate":1})
+        rows=bic.find(jobSel, {"latest.JobStatus":1,"latest.ProjectName":1,"latest.JobStartDate":1,"latest.CompletionDate":1})
         
         
         # adding 
