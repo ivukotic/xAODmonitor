@@ -37,6 +37,7 @@ class BICperProject(object):
     
     def POST(self,interval):
         ret={}
+        ret['plot']=[]
         
         fullInterval=int(interval)
         ct=int(time.time())
@@ -62,7 +63,7 @@ class BICperProject(object):
             #        if d[0]<(ct-(bins+1)*inter) break; // already passed
             #        if d[1]>1 currVal+=1
             #        if d[1]<2 currVal-=1
-                     
+            ret['plot'].append(ser)         
         #[{"name":"success","data":[[1410238880201,67],...]},{} ]        
         return ret
         
