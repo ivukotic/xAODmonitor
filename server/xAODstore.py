@@ -34,6 +34,7 @@ bic=bicDB.jobs
 
 class BICperProject(object):
     exposed = True
+    @cherrypy.tools.json_out()
     
     def POST(self,interval):
         ret={}
@@ -56,7 +57,7 @@ class BICperProject(object):
             ser['name']=p
             ser['data']=[]
             da=sorted(data[p], key=itemgetter(0,1))#, reverse=True)
-            print p, da
+            #print p, da
             #for i in range(bins):
             #    for d in da:
             #        if d[0]>(ct-bins*inter) continue; // already seen
@@ -64,7 +65,8 @@ class BICperProject(object):
             #        if d[1]>1 currVal+=1
             #        if d[1]<2 currVal-=1
             ret['plot'].append(ser)         
-        #[{"name":"success","data":[[1410238880201,67],...]},{} ]        
+        #[{"name":"success","data":[[1410238880201,67],...]},{} ]
+        print ret        
         return ret
         
         
