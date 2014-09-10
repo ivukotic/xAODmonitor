@@ -15,6 +15,7 @@ import string
 import cherrypy
 import time
 import json as simplejson
+from operator import itemgetter
 
 from pymongo import MongoClient
 from bson.json_util import dumps
@@ -36,9 +37,33 @@ class BICperProject(object):
     
     def POST(self,interval):
         ret={}
-        fromTime=int(time.time())-int(interval)
-        rows=bic.find({"$and":[  {"latest.QDate":{"$gt":fromTime}},   {"$or":[{"latest.LastJobStatus":5},{"latest.LastJobStatus":0}]} ]},{"latest.ProjectName":1,"latest.EnteredCurrentStatus":1})
         
+        fullInterval=int(interval)
+        ct=int(time.time())
+        fromTime=ct-fullInterval
+        bins=600.0
+        inter=(float(interval))/bins
+        
+        rows=bic.find({"$and":[  {"latest.EnteredCurrentStatus":{"$gt":fromTime}}, {'latest.ProjectName':{'$exists': True}},  {"latest.LastJobStatus":{"$gt":1L}} ]},{"latest.LastJobStatus":1,"latest.ProjectName":1,"latest.EnteredCurrentStatus":1})
+        projects=rows.distinct("latest.ProjectName")
+        data={}
+        for p in projects: data[p]=[]
+        for r in rows:
+            data[r['latest']['ProjectName']].append((r["latest"]["EnteredCurrentStatus"],r["latest"]["LastJobStatus"]))
+        for p in projects:
+            ser={}
+            ser['name']=p
+            ser['data']=[]
+            da=sorted(data[p], key=itemgetter(0,1))#, reverse=True)
+            print p, da
+            #for i in range(bins):
+            #    for d in da:
+            #        if d[0]>(ct-bins*inter) continue; // already seen
+            #        if d[0]<(ct-(bins+1)*inter) break; // already passed
+            #        if d[1]>1 currVal+=1
+            #        if d[1]<2 currVal-=1
+                     
+        #[{"name":"success","data":[[1410238880201,67],...]},{} ]        
         return ret
         
         
