@@ -66,7 +66,7 @@ class BICperProject(object):
             moms=sorted(moments)
             for m  in moms:
                 skip=False
-                for d in range(len(da):
+                for d in range(len(da)):
                     el=da[d]
                     if el[0]>m:
                         skip=True
