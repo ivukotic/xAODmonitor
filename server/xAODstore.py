@@ -29,7 +29,7 @@ tcollection = tdb.fax
 tnodes=tdb.nodes
 tpaths=tdb.paths
 
-bicDB=client.crow_mwt2
+bicDB=client.crow_osg
 bic=bicDB.jobs
 
 class BICperProject(object):
