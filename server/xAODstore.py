@@ -57,9 +57,15 @@ class BICperProject(object):
             ser['name']=p
             ser['data']=[]
             da=sorted(data[p], key=itemgetter(0,1))#, reverse=True)
-            #print p, da
-            #for i in range(bins):
-            #    for d in da:
+            print p, "data points: ",da
+            currVal=0
+            moments=set()
+            for d in da:
+                moments.add(d[0])
+            print 'moments:',len(moments)
+            moms=sorted(moments)
+            for m  in moms:
+                ser['data'].append([m,len(da)])
             #        if d[0]>(ct-bins*inter) continue; // already seen
             #        if d[0]<(ct-(bins+1)*inter) break; // already passed
             #        if d[1]>1 currVal+=1
