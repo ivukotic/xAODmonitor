@@ -31,6 +31,17 @@ tpaths=tdb.paths
 bicDB=client.crow_test
 bic=bicDB.jobs
 
+class BICperProject(object):
+    exposed = True
+    
+    def POST(self,interval):
+        ret={}
+        fromTime=int(time.time())-int(interval)
+        rows=bic.find({"$and":[  {"latest.QDate":{"$gt":fromTime}},   {"$or":[{"latest.LastJobStatus":5},{"latest.LastJobStatus":0}]} ]},{"latest.ProjectName":1,"latest.EnteredCurrentStatus":1})
+        
+        return ret
+        
+        
 class BICdistincts(object):
     exposed = True
     @cherrypy.tools.json_out()
@@ -38,17 +49,16 @@ class BICdistincts(object):
     def POST(self,interval):
 
         ret={}
-        ret['LastJobStatuses']=[]
         ret['Tasks']=[]
         ret['ProjectNames']=[]
         fromTime=int(time.time())-int(interval)
-        rows=bic.find({"latest.QDate":{"$gt":fromTime}},{"latest.LastJobStatus":1,"latest.ProjectName":1,"latest.User":1})
-        ret['LastJobStatuses']=rows.distinct("latest.LastJobStatus")
+        rows=bic.find({"latest.QDate":{"$gt":fromTime}},{"latest.ProjectName":1,"latest.User":1,"latest.ClusterId":1})
         ret['ProjectNames']=rows.distinct("latest.ProjectName")
-        users=set()
-        for r in rows:
-            users.add(r['latest']['User'].split("@")[0])
-        ret['Users']=list(users)
+        ret['Tasks']=rows.distinct("latest.ClusterId")
+        ret['Users']=rows.distinct("latest.User")
+        for r in range(len(ret['Users'])):
+            ret['Users'][r]=ret['Users'][r].split("@")[0])
+        print ret
         return ret
 
 class IP:
@@ -209,6 +219,7 @@ class xAODreceiver(object):
     ips=IPs()
     network=Network()
     bicdistincts=BICdistincts()
+    bicperproject=BICperProject()
     
     @cherrypy.tools.accept(media='application/json')
     @cherrypy.tools.json_in()
