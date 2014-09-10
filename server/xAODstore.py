@@ -46,7 +46,7 @@ class BICperProject(object):
         bins=600.0
         inter=(float(interval))/bins
         
-        rows=bic.find({"$and":[  {"latest.EnteredCurrentStatus":{"$gt":fromTime}}, {'latest.ProjectName':{'$exists': True}},  {"latest.LastJobStatus":{"$gt":1L}} ]},{"latest.LastJobStatus":1,"latest.ProjectName":1,"latest.EnteredCurrentStatus":1})
+        rows=bic.find({"$and":[  {"latest.EnteredCurrentStatus":{"$gt":fromTime}}, {'latest.ProjectName':{'$exists': True}},  {'latest.ProjectName':'IceCube'}, {"latest.LastJobStatus":{"$gt":1L}} ]},{"latest.LastJobStatus":1,"latest.ProjectName":1,"latest.EnteredCurrentStatus":1})
         projects=rows.distinct("latest.ProjectName")
         data={}
         for p in projects: data[p]=[]
@@ -83,7 +83,7 @@ class BICperProject(object):
                         del da[d]
                         break
                 if not skip:    
-                    ser['data'].append( [m,currVal] )
+                    ser['data'].append( [m*1000,currVal] )
                 
             ret['plot'].append(ser)         
         #[{"name":"success","data":[[1410238880201,67],...]},{} ]
