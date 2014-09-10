@@ -57,7 +57,7 @@ class BICdistincts(object):
         ret['Tasks']=rows.distinct("latest.ClusterId")
         ret['Users']=rows.distinct("latest.User")
         for r in range(len(ret['Users'])):
-            ret['Users'][r]=ret['Users'][r].split("@")[0])
+            ret['Users'][r]=ret['Users'][r].split("@")[0]
         print ret
         return ret
 
