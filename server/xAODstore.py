@@ -70,7 +70,7 @@ class BICperProject(object):
                     el=da[d]
                     if el[0]!=m: continue
                     if el[1]==2: currVal+=1
-                    if el[0]>2: currVal-=1
+                    if el[1]>2: currVal-=1
                     #del da[d]  
                     ser['data'].append( [m*1000,currVal] )
                     break   
