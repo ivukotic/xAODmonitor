@@ -36,7 +36,16 @@ class BICperProject(object):
     exposed = True
     @cherrypy.tools.json_out()
     
-    def POST(self,interval):
+    def POST(self,**params):
+        
+        intInterval=24*3600
+        project='all'
+        user='all'
+        for k in params.keys():
+            if k=='interval': intInterval=int(params[k])
+            if k=='project':  project=params[k]
+            if k=='user':     user=params[k]
+            
         ret={}
         ret['plot']=[]
         
@@ -60,7 +69,12 @@ class BICperProject(object):
         #select jobs that have not CompletionDate and onese that finished after fromTime
         jobSel={"$or":[ {'latest.CompletionDate':{'$exists':False}}, {'latest.CompletionDate':{"$gt":fromTime}} ]}
         #projSel={'latest.ProjectName':'IceCube'}
-        projSel={'latest.ProjectName':{'$exists':True}}
+        
+        if (project=='all'):
+            projSel={'latest.ProjectName':{'$exists':True}}
+        else:
+            projSel={'latest.ProjectName':project}
+            
         rows=bic.find({"$and":[  jobSel, projSel ]},{"latest.JobStatus":1,"latest.ProjectName":1,"latest.JobStartDate":1,"latest.CompletionDate":1})
         
         
