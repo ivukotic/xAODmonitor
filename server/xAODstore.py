@@ -46,12 +46,12 @@ class BICperProject(object):
         bins=600.0
         inter=(float(interval))/bins
         
-        rows=bic.find({"$and":[  {"latest.EnteredCurrentStatus":{"$gt":fromTime}}, {'latest.ProjectName':{'$exists': True}},  {'latest.ProjectName':'IceCube'}, {"latest.LastJobStatus":{"$gt":1L}} ]},{"latest.LastJobStatus":1,"latest.ProjectName":1,"latest.EnteredCurrentStatus":1})
+        rows=bic.find({"$and":[  {"latest.EnteredCurrentStatus":{"$gt":fromTime}}, {'latest.ProjectName':{'$exists': True}},  {'latest.ProjectName':'IceCube'}, {"latest.JobStatus":{"$gt":1L}} ]},{"latest.JobStatus":1,"latest.ProjectName":1,"latest.EnteredCurrentStatus":1})
         projects=rows.distinct("latest.ProjectName")
         data={}
         for p in projects: data[p]=[]
         for r in rows:
-            data[r['latest']['ProjectName']].append((r["latest"]["EnteredCurrentStatus"],r["latest"]["LastJobStatus"]))
+            data[r['latest']['ProjectName']].append((r["latest"]["EnteredCurrentStatus"],r["latest"]["JobStatus"]))
         for p in projects:
             ser={}
             ser['name']=p
