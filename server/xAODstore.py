@@ -40,11 +40,11 @@ class BICperProject(object):
         ret={}
         ret['plot']=[]
         
-        fullInterval=int(interval)
+        intInterval=int(interval)
         ct=int(time.time())
-        fromTime=ct-fullInterval
+        fromTime=ct-intInterval
         bins=600
-        inter=(float(interval))/bins
+        binwidth=interval/bins
         
         
         # QDate = 1410041462
@@ -70,7 +70,7 @@ class BICperProject(object):
         for p in projects:
             pData[p]=[]
             for b in range(bins):
-                pData[p].append([int(1000*(fromTime + b * inter)) , 0])
+                pData[p].append([ (fromTime + b * inter)*1000 , 0 ])
             
         for r in rows:
             proj=r["latest"]["ProjectName"]
@@ -85,7 +85,7 @@ class BICperProject(object):
         for p in projects:
             ser={}
             ser['name']=p
-            ser['data']=pData[proj]
+            ser['data']=pData[p]
             ret['plot'].append(ser)
             
         #[{"name":"success","data":[[1410238880201,67],...]},{} ]
