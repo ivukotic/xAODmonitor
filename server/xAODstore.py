@@ -9,13 +9,14 @@
 
 # curl  -H "Accept: application/json" -X post "http://db.mwt2.org:8080/bicdistincts?interval=123
 
+# curl  -H "Accept: application/json" -H "Content-Type: application/json" -d @d.json "http://db.mwt2.org:8080/bicgeneral"
+
 import random
 import sys,hashlib, urllib2, socket
 import string
 import cherrypy
 import time
 import json as simplejson
-from operator import itemgetter
 
 from pymongo import MongoClient
 from bson.json_util import dumps
@@ -38,27 +39,31 @@ class BICgeneral(object):
     @cherrypy.tools.json_out()
     @cherrypy.tools.json_in()
     
-    def POST(self,**params):
+    def POST(self):
         requ=cherrypy.request.json
-        return requ
         res={}
-        for k in params.keys():
-            res[k]=params[k]
         return res
         
 class BICperProject(object):
     exposed = True
+    @cherrypy.tools.accept(media='application/json')
     @cherrypy.tools.json_out()
+    @cherrypy.tools.json_in()
     
-    def POST(self,**params):
+    def POST(self):
         
         intInterval=24*3600
         project='all'
         user='all'
-        for k in params.keys():
-            if k=='interval': intInterval=int(params[k])
-            if k=='project':  project=params[k]
-            if k=='user':     user=params[k]
+        req=cherrypy.request.json
+        print "request: ", req
+        if "project" in req: project=req["project"]
+        if "user" in req: project=req["user"]
+        if "interval" in req: intInterval=req["interval"] 
+        # for k in params.keys():
+        #     if k=='interval': intInterval=int(params[k])
+        #     if k=='project':  project=params[k]
+        #     if k=='user':     user=params[k]
             
         ret={}
         ret['plot']=[]
