@@ -34,7 +34,7 @@ bicDB=client.crow_osg
 bic=bicDB.jobs
 
 def CORS():
-    cherrypy.response.headers["Access-Control-Allow-Origin"] = “*” # 
+    cherrypy.response.headers["Access-Control-Allow-Origin"]="*"
 
 class BICgeneral(object):
     exposed = True
