@@ -32,6 +32,19 @@ tpaths=tdb.paths
 bicDB=client.crow_osg
 bic=bicDB.jobs
 
+class BICgeneral(object):
+    exposed = True
+    @cherrypy.tools.json_out()
+    @cherrypy.tools.json_in()
+    
+    def POST(self,**params):
+        requ=cherrypy.request.json
+        if requ!=null: return requ
+        res={}
+        for k in params.keys():
+            res[k]=params[k]
+        return res
+        
 class BICperProject(object):
     exposed = True
     @cherrypy.tools.json_out()
@@ -101,8 +114,7 @@ class BICperProject(object):
             ser['data']=pData[p]
             ret['plot'].append(ser)
             
-        #[{"name":"success","data":[[1410238880201,67],...]},{} ]
-        print ret        
+        # print ret
         return ret
         
         
@@ -284,15 +296,16 @@ class xAODreceiver(object):
     network=Network()
     bicdistincts=BICdistincts()
     bicperproject=BICperProject()
+    bicgeneral=BICgeneral()
     
     @cherrypy.tools.accept(media='application/json')
     @cherrypy.tools.json_in()
     
     def POST(self):
         ts=int(time.time())
-	data=cherrypy.request.json
+        data=cherrypy.request.json
         data["timestamp"]=ts
-	collection.insert(data)
+        collection.insert(data)
         return 'OK'
         
 if __name__ == '__main__':    
