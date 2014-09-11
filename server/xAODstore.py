@@ -52,7 +52,6 @@ class BICperProject(object):
     @cherrypy.tools.accept(media='application/json')
     @cherrypy.tools.json_out()
     @cherrypy.tools.json_in()
-    @cherrypy.tools.CORS
     
     def POST(self):
         
@@ -129,7 +128,6 @@ class BICdistincts(object):
     @cherrypy.tools.accept(media='application/json')
     @cherrypy.tools.json_out()
     @cherrypy.tools.json_in()
-    @cherrypy.tools.CORS
     
     def POST(self):
         
