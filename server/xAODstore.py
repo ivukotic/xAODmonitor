@@ -33,8 +33,6 @@ tpaths=tdb.paths
 bicDB=client.crow_osg
 bic=bicDB.jobs
 
-# def CORS():
-  # cherrypy.response.headers["Access-Control-Allow-Origin"] = "*"
 
 class BICgeneral(object):
     exposed = True
@@ -322,7 +320,6 @@ class xAODreceiver(object):
         return 'OK'
         
 if __name__ == '__main__':    
-    # cherrypy.tools.CORS = cherrypy.Tool('before_handler', CORS)
     cherrypy.config.update({'tools.log_headers.on': False})
     print cherrypy.config
     cherrypy.quickstart(xAODreceiver(), '/', '/home/ivukotic/xAODmonitor/server/xAODstore.conf')
