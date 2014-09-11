@@ -59,11 +59,7 @@ class BICperProject(object):
         print "request: ", req
         if "project" in req: project=req["project"]
         if "user" in req: project=req["user"]
-        if "interval" in req: intInterval=req["interval"] 
-        # for k in params.keys():
-        #     if k=='interval': intInterval=int(params[k])
-        #     if k=='project':  project=params[k]
-        #     if k=='user':     user=params[k]
+        if "interval" in req: intInterval=req["interval"]*3600
             
         ret={}
         ret['plot']=[]
@@ -126,10 +122,18 @@ class BICperProject(object):
         
 class BICdistincts(object):
     exposed = True
+    @cherrypy.tools.accept(media='application/json')
     @cherrypy.tools.json_out()
+    @cherrypy.tools.json_in()
     
-    def POST(self,interval):
-
+    def POST(self):
+        
+        req=cherrypy.request.json
+        print "request: ", req
+        
+        interval=720*3600
+        if "interval" in req: interval=req["interval"] * 3600
+        
         ret={}
         ret['Tasks']=[]
         ret['ProjectNames']=[]
