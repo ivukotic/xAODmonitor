@@ -40,7 +40,7 @@ class BICgeneral(object):
     
     def POST(self,**params):
         requ=cherrypy.request.json
-        if requ!=null: return requ
+        return requ
         res={}
         for k in params.keys():
             res[k]=params[k]
