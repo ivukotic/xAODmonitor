@@ -56,7 +56,7 @@ class BICperProject(object):
         project='all'
         user='all'
         req=cherrypy.request.json
-        print "request: ", req
+        print "************ perProject request **************\n ", req
         if "project" in req: project=req["project"]
         if "user" in req: project=req["user"]
         if "interval" in req: intInterval=req["interval"]*3600
@@ -129,7 +129,7 @@ class BICdistincts(object):
     def POST(self):
         
         req=cherrypy.request.json
-        print "request: ", req
+        print "********** distincts request *********** \n", req
         
         interval=720*3600
         if "interval" in req: interval=req["interval"] * 3600
@@ -140,7 +140,7 @@ class BICdistincts(object):
         fromTime=int(time.time())-int(interval)
         rows=bic.find({"latest.QDate":{"$gt":fromTime}},{"latest.ProjectName":1,"latest.User":1,"latest.ClusterId":1})
         ret['ProjectNames']=rows.distinct("latest.ProjectName")
-        # ret['Tasks']=rows.distinct("latest.ClusterId")
+        ret['Tasks']=rows.distinct("latest.ClusterId")
         ret['Users']=rows.distinct("latest.User")
         for r in range(len(ret['Users'])):
             ret['Users'][r]=ret['Users'][r].split("@")[0]
