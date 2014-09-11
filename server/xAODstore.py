@@ -34,6 +34,7 @@ bic=bicDB.jobs
 
 class BICgeneral(object):
     exposed = True
+    @cherrypy.tools.accept(media='application/json')
     @cherrypy.tools.json_out()
     @cherrypy.tools.json_in()
     
