@@ -324,7 +324,7 @@ class xAODreceiver(object):
         return 'OK'
         
 if __name__ == '__main__':    
-    cherrypy.tools.CORS = cherrypy.Tool(‘before_finalize’, CORS) 
+    cherrypy.tools.CORS = cherrypy.Tool('before_finalize', CORS) 
     cherrypy.config.update({'tools.log_headers.on': False})
     print cherrypy.config
     cherrypy.quickstart(xAODreceiver(), '/', '/home/ivukotic/xAODmonitor/server/xAODstore.conf')
