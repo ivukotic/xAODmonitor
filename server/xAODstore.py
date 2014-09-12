@@ -56,9 +56,6 @@ class BICperProject(object):
         req=cherrypy.request.json
         print "************ perProject request **************\n ", req
         
-        if 'pool' not in req: 
-            print 'pool parameter not present'
-            return {}    
         bic=getDB(req['pool'])
         
         if "project" in req: project=req["project"]
@@ -133,10 +130,6 @@ class BICdistincts(object):
     def POST(self):
         req=cherrypy.request.json
         print "********** distincts request *********** \n", req
-        
-        if 'pool' not in req: 
-            print 'pool parameter not present'
-            return {}
             
         bic=getDB(req['pool'])
         
