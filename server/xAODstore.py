@@ -53,15 +53,17 @@ class BICperProject(object):
         intInterval=24*3600
         project='all'
         user='all'
+        task='all'
+        groupby='ProjectName'
         req=cherrypy.request.json
         print "************ perProject request **************\n ", req
         
         bic=getDB(req['pool'])
         
         if "project" in req: project=req["project"]
-        if "user" in req: project=req["user"]
+        if "user" in req: user=req["user"]
         if "interval" in req: intInterval=req["interval"]*3600
-            
+        if "groupby" in req: groupby=req["groupby"]
         ret={}
         ret['plot']=[]
         
@@ -81,28 +83,40 @@ class BICperProject(object):
         # JobFinishedHookDone = 1410041471
         # LastJobLeaseRenewal = 1410041471
         
-        #select jobs that have not CompletionDate and onese that finished after fromTime
-        jobSel={"$or":[ {'latest.CompletionDate':{'$exists':False}}, {'latest.CompletionDate':{"$gt":fromTime}} ]}
-        #projSel={'latest.ProjectName':'IceCube'}
+        orFilters=[]
+        orFilters.append({'latest.CompletionDate':{'$exists':False}}) # select jobs that have not CompletionDate
+        orFilters.append({'latest.CompletionDate':{"$gt":fromTime}} ) # and the ones that finished after fromTime
+        
+        jobSel={"$or":orFilters}
+        
+        andFilters=[]
+        andFilters.append(jobSel)
         
         if (project=='all'):
-            projSel={'latest.ProjectName':{'$exists':True}}
+            andFilters.append({'latest.ProjectName':{'$exists':True}})
         else:
-            projSel={'latest.ProjectName':project}
+            andFilters.append({'latest.ProjectName':project})
             
-        rows=bic.find({"$and":[  jobSel, projSel ]},{"latest.JobStatus":1,"latest.ProjectName":1,"latest.JobStartDate":1,"latest.CompletionDate":1})
+        if (user != 'all'):
+            andFilters.append({'latest.User':{'$regex':user+'@*'} })
+            
+        if (task != 'all'):
+            andFilters.append({'latest.ClusterId':int(task)})
+            
+        rows=bic.find({'$and':andFilters},{'latest.JobStatus':1,'latest.ProjectName':1,'latest.JobStartDate':1,'latest.CompletionDate':1})
         
         
         # adding 
-        projects=rows.distinct("latest.ProjectName") 
+        
+        series=rows.distinct('latest.'+groupby) 
         pData={}
-        for p in projects:
+        for p in series:
             pData[p]=[]
             for b in range(bins):
                 pData[p].append([ (fromTime + b * binwidth)*1000 , 0 ])
             
         for r in rows:
-            proj=r["latest"]["ProjectName"]
+            proj=r["latest"][groupby]
             stime=r["latest"]["JobStartDate"]*1000
             if "CompletionDate" in r["latest"]:
                 etime=r["latest"]["CompletionDate"]*1000
@@ -111,7 +125,9 @@ class BICperProject(object):
             for b in range(bins):
                 if pData[proj][b][0]>stime and pData[proj][b][0]<etime: pData[proj][b][1]+=1
          
-        for p in projects:
+         
+         
+        for p in series:
             ser={}
             ser['name']=p
             ser['data']=pData[p]
