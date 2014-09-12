@@ -103,7 +103,7 @@ class BICperProject(object):
         if (task != 'all'):
             andFilters.append({'latest.ClusterId':int(task)})
             
-        rows=bic.find({'$and':andFilters},{'latest.JobStatus':1,'latest.ProjectName':1,'latest.JobStartDate':1,'latest.CompletionDate':1})
+        rows=bic.find({'$and':andFilters},{'latest.JobStatus':1,'latest.ProjectName':1,'latest.JobStartDate':1,'latest.CompletionDate':1,'latest.User':1,'latest.ClusterId':1})
         
         
         # adding 
