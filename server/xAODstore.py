@@ -315,7 +315,6 @@ class xAODreceiver(object):
     network=Network()
     bicdistincts=BICdistincts()
     bicperproject=BICperProject()
-    bicgeneral=BICgeneral()
     
     @cherrypy.tools.accept(media='application/json')
     @cherrypy.tools.json_in()
