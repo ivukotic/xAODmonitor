@@ -30,22 +30,17 @@ tcollection = tdb.fax
 tnodes=tdb.nodes
 tpaths=tdb.paths
 
-bicDB=client.crow_osg
-bic=bicDB.jobs
 
-# def CORS():
-#     cherrypy.response.headers["Access-Control-Allow-Origin"]="*"
+def getDB(x):
+    return {
+        'crow_osg': client.crow_osg.jobs,
+        'crow_generic': client.crow_generic.jobs,
+        'crow_mwt2': client.crow_mwt2.jobs,
+        'crow_mwt2_test': client.crow_mwt2_test.jobs,
+        'crow_test': client.crow_generic.jobs
+    }[x]
 
-class BICgeneral(object):
-    exposed = True
-    @cherrypy.tools.accept(media='application/json')
-    @cherrypy.tools.json_out()
-    @cherrypy.tools.json_in()
     
-    def POST(self):
-        requ=cherrypy.request.json
-        res={}
-        return res
         
 class BICperProject(object):
     exposed = True
@@ -60,6 +55,12 @@ class BICperProject(object):
         user='all'
         req=cherrypy.request.json
         print "************ perProject request **************\n ", req
+        
+        if 'pool' not in req: 
+            print 'pool parameter not present'
+            return {}    
+        bic=getDB(req['pool'])
+        
         if "project" in req: project=req["project"]
         if "user" in req: project=req["user"]
         if "interval" in req: intInterval=req["interval"]*3600
@@ -130,9 +131,14 @@ class BICdistincts(object):
     @cherrypy.tools.json_in()
     
     def POST(self):
-        
         req=cherrypy.request.json
         print "********** distincts request *********** \n", req
+        
+        if 'pool' not in req: 
+            print 'pool parameter not present'
+            return {}
+            
+        bic=getDB(req['pool'])
         
         interval=720*3600
         if "interval" in req: interval=req["interval"] * 3600
