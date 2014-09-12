@@ -140,7 +140,7 @@ class BICdistincts(object):
         ret['Tasks']=[]
         ret['ProjectNames']=[]
         fromTime=int(time.time())-int(interval)
-        rows=bic.find({"latest.QDate":{"$gt":fromTime}},{"latest.ProjectName":1,"latest.User":1,"latest.ClusterId":1})
+        rows=bic.find({"latest.CompletionDate":{"$gt":fromTime}},{"latest.ProjectName":1,"latest.User":1,"latest.ClusterId":1})
         ret['ProjectNames']=rows.distinct("latest.ProjectName")
         ret['Tasks']=rows.distinct("latest.ClusterId")
         ret['Users']=rows.distinct("latest.User")
