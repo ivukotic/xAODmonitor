@@ -69,7 +69,7 @@ class BICperProject(object):
         
         ct=int(time.time())
         fromTime=ct-intInterval
-        bins=600
+        bins=300
         binwidth=intInterval/bins
         
         
