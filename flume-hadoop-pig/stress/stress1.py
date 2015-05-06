@@ -26,23 +26,22 @@ for w in range(rows):
     result['files']=[]
     result['branches']={}
     
-    
     for i in range(random.randint(1,3)):
         result['files'].append("asdf.root")
 
-    for i in range(random.randint(1,10)):
+    for i in range(random.randint(1,4)):
         result['branches']["branch_number_"+str(i)]=random.randint(0,1000)
     
     
-    event['body']=result
+    event['body']=simplejson.dumps(result)
     events.append(event)
     
-    jdata=simplejson.JSONEncoder().encode(events)
-    print simplejson.dumps(jdata)
+    # print simplejson.dumps(events)
+    
     try:
-        data = urllib.urlencode(jdata)
-        req = urllib2.Request('http://hadoop-dev.mwt2.org:18080/', data)
-        r = urllib2.urlopen(req)
+        req = urllib2.Request('http://hadoop-dev.mwt2.org:18080/')
+        req.add_header('Content-Type', 'application/json')
+        r = urllib2.urlopen(req, simplejson.dumps(events))
     except urllib2.HTTPError, err:
         print err
     
