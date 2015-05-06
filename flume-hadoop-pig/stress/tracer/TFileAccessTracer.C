@@ -45,7 +45,7 @@ int main(int argc, char **argv){
     //TString pld = ;
     
     TString pld = "[{";
-    pld += " \"body\" : \"{\\\"accessedFiles\\\": [\"file1\",\"file2\"]}\" ";
+    pld += " \"body\" : \"{\\\"accessedFiles\\\": [\\\"file1\\\",\\\"file2\\\"]}\" ";
     pld += ", \"headers\": {\"timestamp\": \"434324343\", \"host\": \"random_host.example.com\"}";
     pld += "}]"; 
         
