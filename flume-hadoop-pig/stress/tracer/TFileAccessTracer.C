@@ -12,17 +12,17 @@
 using namespace std;
 int main(int argc, char **argv){
     
-    static const char* SERVER_ADDRESS = "http://mlassnig-dev.cern.ch/traces/";
+    static const char* SERVER_ADDRESS = "http://hadoop-dev.mwt2.org/";
     static TUrl url( SERVER_ADDRESS );
     TSocket socket( url.GetHost(), url.GetPort() );
 
     if( ! socket.IsValid() ) {
-        std::cout<<"No valid socket could be established to" << std::endl;
+        cout<<"No valid socket could be established to" << endl;
         return 1;
     }
 
     // Get some info about the user:
-    std::unique_ptr< UserGroup_t > uinfo( gSystem->GetUserInfo() );
+    unique_ptr< UserGroup_t > uinfo( gSystem->GetUserInfo() );
         
     // Start constructing the header of the message to send to the server:
     TString hdr = "POST /";
@@ -42,10 +42,7 @@ int main(int argc, char **argv){
     hdr += "Content-Length: ";
         
     // Now construct the message payload:
-    TString pld = "{\"accessedFiles\": [";
-    pld += "[\"" + "info.filePath1" + "\",\"" + "info.fileName1" + "\"],";
-    pld += "[\"" + "info.filePath2" + "\",\"" + "info.fileName2" + "\"]";
-    pld += "]}";
+    TString pld = "{\"accessedFiles\": [\"file1\",\"file2\"]} ";
         
     // Now finish constructing the header, and merge the two into a single message:
     hdr += TString::Format( "%i", pld.Length() );
@@ -53,11 +50,11 @@ int main(int argc, char **argv){
     const ::TString msg = hdr + pld;
     
     // A debug message for the time being:
-   	std::cout<< msg.Data()<<std::end;
+   	cout<< msg.Data()<<endl;
    	
    	// Send the message:
    	if( socket.SendRaw( msg.Data(), msg.Length() ) < 0 ) {
-   	  std::cout<< "Failed to send message."<<std::endl;
+   	  cout<< "Failed to send message."<<endl;
    	}
    	   
    	
