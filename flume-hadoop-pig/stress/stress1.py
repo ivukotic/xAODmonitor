@@ -16,9 +16,9 @@ for w in range(rows):
     events=[]
     
     event={}
-    event.headers={}
-    event.headers['timestamp']="434324343"
-    event.headers['host']="random_host.example.com"
+    event['headers']={}
+    event['headers']['timestamp']="434324343"
+    event['headers']['host']="random_host.example.com"
            
     result={}
     result['cputime']=random.randint(0,1000)
@@ -34,7 +34,7 @@ for w in range(rows):
         result['branches']["branch_number_"+str(i)]=random.randint(0,1000)
     
     
-    event.body=result
+    event['body']=result
     events.append(event)
     
     jdata=simplejson.JSONEncoder().encode(events)
