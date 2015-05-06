@@ -18,11 +18,11 @@ int main(int argc, char **argv){
 
     if( ! socket.IsValid() ) {
         std::cout<<"No valid socket could be established to" << std::endl;
-        return;
+        return 1;
     }
 
     // Get some info about the user:
-    std::unique_ptr< ::UserGroup_t > uinfo( gSystem->GetUserInfo() );
+    std::unique_ptr< UserGroup_t > uinfo( gSystem->GetUserInfo() );
         
     // Start constructing the header of the message to send to the server:
     TString hdr = "POST /";
@@ -58,7 +58,6 @@ int main(int argc, char **argv){
    	// Send the message:
    	if( socket.SendRaw( msg.Data(), msg.Length() ) < 0 ) {
    	  std::cout<< "Failed to send message."<<std::endl;
-   	  return;
    	}
    	   
    	
