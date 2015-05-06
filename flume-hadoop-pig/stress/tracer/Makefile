@@ -11,19 +11,16 @@ endif
 ALIBS = $(LIBS) -lTreePlayer
 
 #------------------------------------------------------------------------------
-INSPO       = TFileAccessTracer.$(ObjSuf)
-INSPS       = TFileAccessTracer.$(SrcSuf)
-INSP        = TFileAccessTracer$(ExeSuf)
+INSPO       = TFileAccessTracer.o
+INSPS       = TFileAccessTracer.cxx
+INSP        = TFileAccessTracer
 
 OBJS          = $(INSPO)
 PROGRAMS      = $(INSP)
 
 #------------------------------------------------------------------------------
 
-.SUFFIXES: .$(SrcSuf) .$(ObjSuf) .$(DllSuf)
-
 all:            $(PROGRAMS)
-
 
 $(INSP):      $(INSPO)
 		$(LD) $(LDFLAGS) $^ $(ALIBS) $(OutPutOpt)$@
