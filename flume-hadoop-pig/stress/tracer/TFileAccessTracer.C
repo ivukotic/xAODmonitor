@@ -44,7 +44,10 @@ int main(int argc, char **argv){
     // Now construct the message payload:
     //TString pld = ;
     
-    TString pld = "[{\"body\": \\"{\\"accessedFiles\\": [\\"file1\\",\\"file2\\"]}\\", \"headers\": {\"timestamp\": \"434324343\", \"host\": \"random_host.example.com\"}}]"; 
+    TString pld = "[{";
+    pld += " \"body\" : \"{\"accessedFiles\": [\"file1\",\"file2\"]}\" ";
+    pld += ", \"headers\": {\"timestamp\": \"434324343\", \"host\": \"random_host.example.com\"}";
+    pld += "}]"; 
         
     // Now finish constructing the header, and merge the two into a single message:
     hdr += TString::Format( "%i", pld.Length() );
