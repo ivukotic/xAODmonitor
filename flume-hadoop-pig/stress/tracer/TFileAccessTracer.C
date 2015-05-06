@@ -42,7 +42,7 @@ int main(int argc, char **argv){
     hdr += "Content-Length: ";
         
     // Now construct the message payload:
-    TString pld = "{\"accessedFiles\": [\"file1\",\"file2\"]} ";
+    //TString pld = "{\"accessedFiles\": [\"file1\",\"file2\"]} ";
     
     TString pld = "[{\"body\": \"results\", \"headers\": {\"timestamp\": \"434324343\", \"host\": \"random_host.example.com\"}}]"; 
         
