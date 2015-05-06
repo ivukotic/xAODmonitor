@@ -40,16 +40,16 @@ def getDB(x):
         'crow_test': client.crow_generic.jobs
     }[x]
 
-    
-        
+
+
 class BICperProject(object):
     exposed = True
     @cherrypy.tools.accept(media='application/json')
     @cherrypy.tools.json_out()
     @cherrypy.tools.json_in()
-    
+
     def POST(self):
-        
+
         intInterval=24*3600
         project='all'
         user='all'
@@ -57,22 +57,22 @@ class BICperProject(object):
         groupby='ProjectName'
         req=cherrypy.request.json
         print "************ perProject request **************\n ", req
-        
+
         bic=getDB(req['pool'])
-        
+
         if "project" in req: project=req["project"]
         if "user" in req: user=req["user"]
-        if "interval" in req: intInterval=req["interval"]*3600
+        if "interval" in req: intInterval=int(req["interval"])*3600
         if "groupby" in req: groupby=req["groupby"]
         ret={}
         ret['plot']=[]
-        
+
         ct=int(time.time())
         fromTime=ct-intInterval
         bins=100
         binwidth=intInterval/bins
-        
-        
+
+
         # QDate = 1410041462
         # JobCurrentStartDate = 1410041468
          # JobStartDate = 1410041468
@@ -82,39 +82,39 @@ class BICperProject(object):
         # EnteredCurrentStatus = 1410041471
         # JobFinishedHookDone = 1410041471
         # LastJobLeaseRenewal = 1410041471
-        
+
         orFilters=[]
         orFilters.append({'latest.CompletionDate':{'$exists':False}}) # select jobs that have not CompletionDate
         orFilters.append({'latest.CompletionDate':{"$gt":fromTime}} ) # and the ones that finished after fromTime
-        
+
         jobSel={"$or":orFilters}
-        
+
         andFilters=[]
         andFilters.append(jobSel)
-        
+
         if (project=='all'):
             andFilters.append({'latest.ProjectName':{'$exists':True}})
         else:
             andFilters.append({'latest.ProjectName':project})
-            
+
         if (user != 'all'):
             andFilters.append({'latest.User':{'$regex':user+'@*'} })
-            
+
         if (task != 'all'):
             andFilters.append({'latest.ClusterId':int(task)})
-            
-        rows=bic.find({'$and':andFilters},{'latest.JobStatus':1,'latest.ProjectName':1,'latest.JobStartDate':1,'latest.CompletionDate':1,'latest.User':1,'latest.ClusterId':1})
-        
-        
+
+        rows=bic.find({'$and':andFilters},{'latest.JobStatus':1,'latest.ProjectName':1,'latest.JobStartDate':1,'latest.CompletionDate':1,'latest.User':1,'latest.ClusterId':1,'latest.Owner':1})
+
+
         # adding 
-        
+
         series=rows.distinct('latest.'+groupby) 
         pData={}
         for p in series:
             pData[p]=[]
             for b in range(bins):
                 pData[p].append([ (fromTime + b * binwidth)*1000 , 0 ])
-            
+
         for r in rows:
             proj=r["latest"][groupby]
             stime=r["latest"]["JobStartDate"]*1000
@@ -124,42 +124,43 @@ class BICperProject(object):
                 etime=ct*1000
             for b in range(bins):
                 if pData[proj][b][0]>stime and pData[proj][b][0]<etime: pData[proj][b][1]+=1
-         
-         
-         
+
+
+
         for p in series:
             ser={}
             ser['name']=p
             ser['data']=pData[p]
             ret['plot'].append(ser)
-            
+
         # print ret
         return ret
-        
-        
+
+
 class BICdistincts(object):
     exposed = True
     @cherrypy.tools.accept(media='application/json')
     @cherrypy.tools.json_out()
     @cherrypy.tools.json_in()
-    
+
     def POST(self):
         req=cherrypy.request.json
         print "********** distincts request *********** \n", req
-            
+
         bic=getDB(req['pool'])
-        
+
         interval=720*3600
         if "interval" in req: interval=req["interval"] * 3600
-        
+
         ret={}
         ret['Tasks']=[]
         ret['ProjectNames']=[]
         fromTime=int(time.time())-int(interval)
-        rows=bic.find({"latest.CompletionDate":{"$gt":fromTime}},{"latest.ProjectName":1,"latest.User":1,"latest.ClusterId":1})
+        rows=bic.find({"latest.CompletionDate":{"$gt":fromTime}},{"latest.ProjectName":1,"latest.User":1,"latest.ClusterId":1,"latest.Owner":1})
         ret['ProjectNames']=rows.distinct("latest.ProjectName")
         ret['Tasks']=rows.distinct("latest.ClusterId")
         ret['Users']=rows.distinct("latest.User")
+        ret['Owners']=rows.distinct("latest.Owner")
         for r in range(len(ret['Users'])):
             ret['Users'][r]=ret['Users'][r].split("@")[0]
         # print ret
@@ -224,7 +225,7 @@ class IP:
 class Network(object):
     exposed = True
     @cherrypy.tools.json_out()
- 
+
     def POST(self,source, destination):
         rows=tpaths.find({"$and": [ {"source":source} , {"destination":destination} ] });
         ret={}
@@ -236,7 +237,7 @@ class Network(object):
         for r in rows:
             c=0
             rate=r['totRate']/r['measurements']
-            
+
             #removing double stars
             doubleZero=1
             while doubleZero:
@@ -247,13 +248,13 @@ class Network(object):
                         break
                 if doubleZero!=0:
                     del r['nodes'][doubleZero] 
-            
+
             # naming stars differently        
             for ni in range(len(r['nodes'])):
                 if r['nodes'][ni]==0: 
                     r['nodes'][ni]=starCounter
                     starCounter+=1
-                    
+
             for n in r['nodes']:
                 if n not in no:
                     no.append(n)
@@ -271,7 +272,7 @@ class Network(object):
                     if found==0:
                         ed.append([n,t,rate, r['measurements']])
                 c+=1
-        
+
         for sn in no:
             n=IP(sn)
             ret['nodes'].append({ "ip":n.ip,"sip":n.getIP(),"name":n.name, "up":n.upstream, "down":n.downstream })
@@ -283,7 +284,7 @@ class Network(object):
 class IPs(object):
     exposed = True
     @cherrypy.tools.json_out()
- 
+
     def POST(self):
         # requ=cherrypy.request.json
         nods=tnodes.find()
@@ -305,18 +306,18 @@ class IPs(object):
             la=n["latitude"]
             ret.append({ "ip":n["ip"], "name":n["name"], "long":lo, "lat":la, "up":upstream, "down":downstream })
         return ret    
-    
+
 class Trace(object):
     exposed = True
     @cherrypy.tools.json_in()
-    
+
     def POST(self):
         ts=int(time.time())
         result=cherrypy.request.json
         result["timestamp"]=ts
         tcollection.insert(result)
         return 'trace OK.'
-        
+
 class xAODreceiver(object):
     exposed = True
     trace=Trace()
@@ -324,17 +325,17 @@ class xAODreceiver(object):
     network=Network()
     bicdistincts=BICdistincts()
     bicperproject=BICperProject()
-    
+
     @cherrypy.tools.accept(media='application/json')
     @cherrypy.tools.json_in()
-    
+
     def POST(self):
         ts=int(time.time())
         data=cherrypy.request.json
         data["timestamp"]=ts
         collection.insert(data)
         return 'OK'
-        
+
 if __name__ == '__main__':    
     # cherrypy.tools.CORS = cherrypy.Tool('before_finalize', CORS)
     cherrypy.config.update({'tools.log_headers.on': False})
