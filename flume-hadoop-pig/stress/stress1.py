@@ -27,10 +27,10 @@ for w in range(rows):
     result['branches']={}
     
     
-    for i in range(random.randint(1,10)):
+    for i in range(random.randint(1,3)):
         result['files'].append("asdf.root")
 
-    for i in range(random.randint(990,998)):
+    for i in range(random.randint(1,10)):
         result['branches']["branch_number_"+str(i)]=random.randint(0,1000)
     
     
