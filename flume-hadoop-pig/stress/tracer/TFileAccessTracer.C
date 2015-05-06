@@ -12,7 +12,7 @@
 using namespace std;
 int main(int argc, char **argv){
     
-    static const char* SERVER_ADDRESS = "http://hadoop-dev.mwt2.org/";
+    static const char* SERVER_ADDRESS = "http://hadoop-dev.mwt2.org:18080";
     static TUrl url( SERVER_ADDRESS );
     TSocket socket( url.GetHost(), url.GetPort() );
 
@@ -43,6 +43,8 @@ int main(int argc, char **argv){
         
     // Now construct the message payload:
     TString pld = "{\"accessedFiles\": [\"file1\",\"file2\"]} ";
+    
+    TString pld = "[{\"body\": \"results\", \"headers\": {\"timestamp\": \"434324343\", \"host\": \"random_host.example.com\"}}]"; 
         
     // Now finish constructing the header, and merge the two into a single message:
     hdr += TString::Format( "%i", pld.Length() );
