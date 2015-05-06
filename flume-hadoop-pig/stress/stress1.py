@@ -27,7 +27,7 @@ for w in range(rows):
     data=simplejson.JSONEncoder().encode(result)
     try:
         data = urllib.urlencode({'data':data})
-        req = urllib2.Request('http://hadoop-dev.mwt2.org:80/', data)
+        req = urllib2.Request('http://hadoop-dev.mwt2.org:18080/', data)
         r = urllib2.urlopen(req)
     except urllib2.HTTPError, err:
         print err
