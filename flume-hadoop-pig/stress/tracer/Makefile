@@ -5,14 +5,14 @@ endif
 ifneq ($(MKARCH),)
 include $(MKARCH)
 else
-#include $(ROOTSYS)/test/Makefile.arch
+include $(ROOTSYS)/test/Makefile.arch
 endif
 
 ALIBS = $(LIBS) -lTreePlayer
 
 #------------------------------------------------------------------------------
 INSPO       = TFileAccessTracer.o
-INSPS       = TFileAccessTracer.cxx
+INSPS       = TFileAccessTracer.C
 INSP        = TFileAccessTracer
 
 OBJS          = $(INSPO)
