@@ -17,7 +17,7 @@ for w in range(rows):
     
     event={}
     event['headers']={}
-    event['headers']['timestamp']="434324343"
+    event['headers']['timestamp']=str(time.time())
     event['headers']['host']="random_host.example.com"
            
     result={}
