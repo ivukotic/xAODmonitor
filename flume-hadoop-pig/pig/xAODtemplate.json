@@ -1,5 +1,5 @@
 {
-  "template" : "xAOD-data-20*",
+  "template" : "xaod-data-20*",
   "settings" : {
     "analysis" : {
       "analyzer": {
