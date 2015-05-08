@@ -99,7 +99,7 @@ int main(int argc, char **argv){
           pld += "}";
           first = false;
     }
-    pld += "]}, ";
+    pld += "]}\", ";
     pld += "\"headers\": {\"timestamp\": \"";
     pld += TTimeStamp().GetSec()*1000;
     pld += "\", \"host\": \"";
