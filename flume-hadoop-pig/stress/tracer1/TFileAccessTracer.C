@@ -74,9 +74,6 @@ int main(int argc, char **argv){
     pld += " \\\"accessedContainers\\\": [";
     first = true;
     for( const auto& bs : m_accessedFiles ) {
-       if( ! bs.readEntries() ) {
-          continue;
-       }
        if( ! first ) {
           pld += ", ";
        }
@@ -91,9 +88,6 @@ int main(int argc, char **argv){
     pld += " \\\"accessedBranches\\\": [";
     first = true;
     for( const auto& bs : m_accessedFiles ) {
-          if( ( ! bs ) || ( ! bs->readEntries() ) ) {
-             continue;
-          }
           if( ! first ) {
              pld += ", ";
           }
