@@ -11,9 +11,14 @@
 
 using namespace std;
 
-class aFiles{
-    string filePath="/myPath/a/b/c/";
-    string fileName="myFilename.root";
+class AccessedFile {
+   public:
+      /// The full path to the file
+      ::TString filePath;
+      /// The name of the file
+      ::TString fileName;
+      /// Operator to be able to put this into an std::set
+      bool operator< ( const AccessedFile& rhs ) const;
 };
 
 
@@ -32,8 +37,10 @@ int main(int argc, char **argv){
     unique_ptr< UserGroup_t > uinfo( gSystem->GetUserInfo() );
         
         
-        
-        
+     std::set< AccessedFile > m_accessedFiles;   
+     m_accessedFiles.insert(AccessedFile{ TString("/myFilePath/a/b/c/"),  TString("myFileName.root")  } );
+     m_accessedFiles.insert(AccessedFile{ TString("/myFilePath/c/b/a/"),  TString("myFileName1.root")  } );
+                      
     // Start constructing the header of the message to send to the server:
     TString hdr = "POST /";
     hdr += url.GetFile();
@@ -48,7 +55,7 @@ int main(int argc, char **argv){
         
     // Now construct the message payload:
     
-    TString pld = "[{"
+    TString pld = "[{";
     pld += "\"body\": \"{\\\"accessedFiles\\\": [";
     bool first = true;
     for( auto& info : m_accessedFiles ) {
