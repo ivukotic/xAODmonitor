@@ -23,8 +23,8 @@ class AccessedFile {
       TString fileName;
       TString GetName;
       int readEntries;
-      };
 };
+
 
 
 int main(int argc, char **argv){
