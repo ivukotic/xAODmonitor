@@ -12,14 +12,17 @@
 using namespace std;
 
 class AccessedFile {
+    AccessedFile::AccessedFile(TString p, TString f, TString gn, int re){
+        filePath=p;
+        fileName=f;
+        GetName=gn;
+        readEntries=re;
+    }
    public:
       TString filePath;
       TString fileName;
-      TString GetName(){
-          return TString("myBranch");
-      };
-      int readEntries(){
-          return 123;
+      TString GetName;
+      int readEntries;
       };
 };
 
@@ -40,8 +43,8 @@ int main(int argc, char **argv){
         
         
      vector< AccessedFile > m_accessedFiles;   
-     m_accessedFiles.push_back(AccessedFile{ TString("/myFilePath/a/b/c/"),  TString("myFileName.root")  } );
-     m_accessedFiles.push_back(AccessedFile{ TString("/myFilePath/c/b/a/"),  TString("myFileName1.root")  } );
+     m_accessedFiles.push_back(AccessedFile( TString("/myFilePath/a/b/c/"),  TString("myFileName.root") , TString("myBranch1"), 100 ) );
+     m_accessedFiles.push_back(AccessedFile( TString("/myFilePath/c/b/a/"),  TString("myFileName1.root"), TString("myBranch2"), 200 ) );
                       
     // Start constructing the header of the message to send to the server:
     TString hdr = "POST /";
