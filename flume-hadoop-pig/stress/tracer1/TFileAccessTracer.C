@@ -13,9 +13,7 @@ using namespace std;
 
 class AccessedFile {
    public:
-      /// The full path to the file
       TString filePath;
-      /// The name of the file
       TString fileName;
       TString GetName(){
           return TString("myBranch");
