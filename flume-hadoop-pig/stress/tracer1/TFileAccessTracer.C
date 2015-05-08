@@ -9,13 +9,14 @@
 #include <TUrl.h>
 #include <TSocket.h>
 
+using namespace std;
+
 class aFiles{
-    String filePath="/myPath/a/b/c/";
-    String fileName="myFilename.root";
+    string filePath="/myPath/a/b/c/";
+    string fileName="myFilename.root";
 };
 
 
-using namespace std;
 int main(int argc, char **argv){
     
     static const char* SERVER_ADDRESS = "http://hadoop-dev.mwt2.org:18080";
