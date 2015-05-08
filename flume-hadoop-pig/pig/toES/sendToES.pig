@@ -5,6 +5,8 @@ REGISTER '/usr/lib/pig/lib/json-*.jar';
 REGISTER '/usr/lib/pig/lib/jython-*.jar';
 REGISTER '/usr/lib/pig/lib/snappy-*.jar';
 
+REGISTER '/home/ivukotic/xAODmonitor/jython-standalone-2.7.0.jar';
+
 --REGISTER '/home/ivukotic/xAODmonitor/elephant-bird-hadoop-compat-4.1.jar'
 --REGISTER '/home/ivukotic/xAODmonitor/elephant-bird-pig-4.1.jar'
 
