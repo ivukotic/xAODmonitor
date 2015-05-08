@@ -17,6 +17,12 @@ class AccessedFile {
       TString filePath;
       /// The name of the file
       TString fileName;
+      TString GetName(){
+          return TString("myBranch");
+      };
+      int readEntries(){
+          return 123;
+      };
 };
 
 
@@ -64,28 +70,27 @@ int main(int argc, char **argv){
        first = false;
     }
     pld += "],";
-    const xAOD::ReadStats& rs = xAOD::IOStats::instance().stats();
+    
     pld += " \\\"accessedContainers\\\": [";
     first = true;
-    for( const auto& bs : rs.containers() ) {
-       if( ! bs.second.readEntries() ) {
+    for( const auto& bs : m_accessedFiles ) {
+       if( ! bs.readEntries() ) {
           continue;
        }
        if( ! first ) {
           pld += ", ";
        }
        pld += "{\\\"name\\\": \\\"";
-       pld += bs.second.GetName();
+       pld += bs.GetName();
        pld += "\\\", \\\"readEntries\\\": ";
-       pld += bs.second.readEntries();
+       pld += bs.readEntries();
        pld += "}";
        first = false;
     }
     pld += "], ";
     pld += " \\\"accessedBranches\\\": [";
     first = true;
-    for( const auto& branch : rs.branches() ) {
-       for( const xAOD::BranchStats* bs : branch.second ) {
+    for( const auto& bs : m_accessedFiles ) {
           if( ( ! bs ) || ( ! bs->readEntries() ) ) {
              continue;
           }
@@ -98,11 +103,10 @@ int main(int argc, char **argv){
           pld += bs->readEntries();
           pld += "}";
           first = false;
-       }
     }
     pld += "]}, ";
     pld += "\"headers\": {\"timestamp\": \"";
-    pld += TTimeStamp().GetSec();
+    pld += TTimeStamp().GetSec()*1000;
     pld += "\", \"host\": \"";
     pld += gSystem->HostName();
     pld += "\"}}]";
