@@ -5,12 +5,25 @@ REGISTER '/usr/lib/pig/lib/json-*.jar';
 REGISTER '/usr/lib/pig/lib/jython-*.jar';
 REGISTER '/usr/lib/pig/lib/snappy-*.jar';
 
-REGISTER '/home/ivukotic/xAODmonitor/elephant-bird-hadoop-compat-4.1.jar'
-REGISTER '/home/ivukotic/xAODmonitor/elephant-bird-pig-4.1.jar'
+--REGISTER '/home/ivukotic/xAODmonitor/elephant-bird-hadoop-compat-4.1.jar'
+--REGISTER '/home/ivukotic/xAODmonitor/elephant-bird-pig-4.1.jar'
+
+REGISTER 'myudfs.py' using jython as myfuncs;
 
 REGISTER '/usr/lib/pig/lib/elasticsearch-hadoop-*.jar';
-
 define EsStorage org.elasticsearch.hadoop.pig.EsStorage('es.nodes=http://uct2-es-head.mwt2.org:9200');
+
+RECS = LOAD 'xAODcollector' using PigStorage as (Rec:chararray);
+
+CNTS = foreach RECS generate myfuncs.ParsedData(Rec);
+
+dump CNTS;
+ 
+
+grJ = group JOBS by (PANDAID, CLOUD, COMPUTINGSITE, PRODSOURCELABEL);
+gJOBS = foreach grJ { generate FLATTEN(group) as (PANDAID,CLOUD,COMPUTINGSITE,PRODSOURCELABEL), myfuncs.BagToBag(JOBS); };
+
+
 
 --RECS = LOAD 'tests/data.json' using JsonLoader('cputime:int, walltime:int');
 
