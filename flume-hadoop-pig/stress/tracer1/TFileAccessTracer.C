@@ -12,13 +12,13 @@
 using namespace std;
 
 class AccessedFile {
-    AccessedFile::AccessedFile(TString p, TString f, TString gn, int re){
-        filePath=p;
-        fileName=f;
-        GetName=gn;
-        readEntries=re;
-    }
    public:
+       AccessedFile::AccessedFile(TString p, TString f, TString gn, int re){
+           filePath=p;
+           fileName=f;
+           GetName=gn;
+           readEntries=re;
+       }
       TString filePath;
       TString fileName;
       TString GetName;
