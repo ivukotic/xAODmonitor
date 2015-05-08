@@ -9,10 +9,11 @@
 #include <TUrl.h>
 #include <TSocket.h>
 
-class aFiles(){
+class aFiles{
     String filePath="/myPath/a/b/c/";
     String fileName="myFilename.root";
-}
+};
+
 
 using namespace std;
 int main(int argc, char **argv){
