@@ -93,9 +93,9 @@ int main(int argc, char **argv){
              pld += ", ";
           }
           pld += "{\\\"name\\\": \\\"";
-          pld += bs->GetName;
+          pld += bs.GetName;
           pld += "\\\", \\\"readEntries\\\":";
-          pld += bs->readEntries;
+          pld += bs.readEntries;
           pld += "}";
           first = false;
     }
