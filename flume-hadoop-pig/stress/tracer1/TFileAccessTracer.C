@@ -13,7 +13,7 @@ using namespace std;
 
 class AccessedFile {
    public:
-       AccessedFile::AccessedFile(TString p, TString f, TString gn, int re){
+       AccessedFile(TString p, TString f, TString gn, int re){
            filePath=p;
            fileName=f;
            GetName=gn;
