@@ -10,8 +10,6 @@ REGISTER '/usr/lib/pig/piggybank.jar' ;
 
 REGISTER '/share/home/ivukotic/xAODmonitor/jython*.jar';
 
---REGISTER '/home/ivukotic/xAODmonitor/elephant-bird-hadoop-compat-4.1.jar'
---REGISTER '/home/ivukotic/xAODmonitor/elephant-bird-pig-4.1.jar'
 
 REGISTER 'myudfs.py' using jython as myfuncs;
 
@@ -30,7 +28,7 @@ gJOBS = foreach grJ { generate FLATTEN(group) as (PANDAID,CLOUD,COMPUTINGSITE,PR
 
 
 
---RECS = LOAD 'tests/data.json' using JsonLoader('cputime:int, walltime:int');
+--RECS = LOAD 'tests.json/data.01' using JsonLoader('cputime:int, walltime:int');
 
 REGISTER '/home/ivukotic/xAODmonitor/elephant-bird-hadoop-compat-4.1.jar'
 REGISTER '/home/ivukotic/xAODmonitor/elephant-bird-pig-4.1.jar'
@@ -38,9 +36,11 @@ RECS = LOAD 'tests/data.13.1431022457749.json' using com.twitter.elephantbird.pi
 A = foreach RECS generate (int)$0#'cputime' as cputime, (int)$0#'walltime' as walltime, (bag{tuple(chararray)})$0#'files' as files, (map[])$0#'branches' as branches;
 describe A;
 
-RECS = LOAD 'tests/data1.json' using org.apache.pig.piggybank.storage.JsonLoader('files: {(fn:chararray)},cputime:int, walltime:int');
-RECS = LOAD 'tests/data1.json' using JsonLoader('files: {(fn:chararray)},cputime:int, walltime:int');
-RECS = LOAD 'xAODcollector' using JsonLoader('cputime:int, walltime:int');
+RECS = LOAD 'tests/data1.json' using JsonLoader('accessedFiles: {(fn:chararray)},accessedContainers:(chararray,int),accessedBranches:(chararray,int)');
+
+RECS = LOAD 'xAODcollector.json/xAODdata.2015-05-11/' using JsonLoader('accessedBranches:{chararray,int}');
+RECS = LOAD 'xAODcollector.json/xAODdata.2015-05-11/' using JsonLoader('accessedFiles:chararray,accessedContainers:chararray,accessedBranches:chararray');
+
 --RECS = LOAD 'tests/data.json' using JsonLoader('files: {(fn:chararray)}, branches: (br:chararray, reads:int),cputime:int,walltime:int');
 --files: {(fn:chararray)}, branches: (br:chararray, reads:int),
 -- times:bag{tuple(state:chararray, time:long)};
