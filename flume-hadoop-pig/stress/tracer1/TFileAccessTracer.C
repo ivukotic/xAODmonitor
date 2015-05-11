@@ -78,7 +78,8 @@ int main(int argc, char **argv){
        if( ! first ) {
           pld += ", ";
        }
-       pld += "\\\"" + bs.GetName + "\\\":" + bs.readEntries;
+       pld += "\\\"" + bs.GetName + "\\\":";
+       pld += bs.readEntries;
        first = false;
     }
     pld += "}, ";
@@ -89,7 +90,8 @@ int main(int argc, char **argv){
           if( ! first ) {
              pld += ", ";
           }
-          pld += "\\\"" + bs.GetName + "\\\":" + bs.readEntries;
+          pld += "\\\"" + bs.GetName + "\\\":";
+          pld += bs.readEntries;
           first = false;
     }
     pld += "}}\", ";
