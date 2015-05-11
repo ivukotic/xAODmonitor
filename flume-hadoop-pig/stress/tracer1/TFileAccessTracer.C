@@ -71,35 +71,34 @@ int main(int argc, char **argv){
        first = false;
     }
     pld += "],";
-    
-    pld += " \\\"accessedContainers\\\": [";
-    first = true;
+
+    pld += " \\\"accessedContainers\\\":{";
+    first = true;    
     for( const auto& bs : m_accessedFiles ) {
        if( ! first ) {
           pld += ", ";
        }
-       pld += "{\\\"name\\\": \\\"";
+       pld += "\\\"";
        pld += bs.GetName;
-       pld += "\\\", \\\"readEntries\\\": ";
+       pld += "\\\":";
        pld += bs.readEntries;
-       pld += "}";
        first = false;
     }
-    pld += "], ";
-    pld += " \\\"accessedBranches\\\": [";
+    pld += "}, ";
+    
+    pld += " \\\"accessedBranches\\\":{";
     first = true;
     for( const auto& bs : m_accessedFiles ) {
           if( ! first ) {
              pld += ", ";
           }
-          pld += "{\\\"name\\\": \\\"";
+          pld += "\\\"";
           pld += bs.GetName;
-          pld += "\\\", \\\"readEntries\\\":";
+          pld += "\\\":";
           pld += bs.readEntries;
-          pld += "}";
           first = false;
     }
-    pld += "]}\", ";
+    pld += "}}\", ";
     pld += "\"headers\": {\"timestamp\": \"";
     pld += TTimeStamp().GetSec()*1000;
     pld += "\", \"host\": \"";

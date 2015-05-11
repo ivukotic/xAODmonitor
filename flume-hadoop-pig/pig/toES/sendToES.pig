@@ -1,11 +1,14 @@
-REGISTER '/usr/lib/pig/piggybank.jar' ;
-REGISTER '/usr/lib/pig/lib/avro-*.jar';
-REGISTER '/usr/lib/pig/lib/jackson-*.jar';
-REGISTER '/usr/lib/pig/lib/json-*.jar';
-REGISTER '/usr/lib/pig/lib/jython-*.jar';
-REGISTER '/usr/lib/pig/lib/snappy-*.jar';
 
-REGISTER '/home/ivukotic/xAODmonitor/jython-standalone-2.7.0.jar';
+-- try again the JsonLoader ( see if it can load from directory named with .json )
+
+
+REGISTER '/usr/lib/pig/piggybank.jar' ;
+--REGISTER '/usr/lib/pig/lib/jackson-*.jar';
+--REGISTER '/usr/lib/pig/lib/json-*.jar';
+--REGISTER '/usr/lib/pig/lib/jython-*.jar';
+--REGISTER '/usr/lib/pig/lib/snappy-*.jar';
+
+REGISTER '/share/home/ivukotic/xAODmonitor/jython*.jar';
 
 --REGISTER '/home/ivukotic/xAODmonitor/elephant-bird-hadoop-compat-4.1.jar'
 --REGISTER '/home/ivukotic/xAODmonitor/elephant-bird-pig-4.1.jar'
@@ -47,3 +50,7 @@ STORE L INTO 'xaodtest3/xaodtest_record' USING EsStorage();
 
 -- RECS = LOAD 'tests' USING PigStorage(',') AS (F:int,S:int,T:int,N:chararray);
 -- STORE RECS INTO 'xaodtest/xaodtest_record' USING EsStorage();
+
+
+
+--REGISTER '/usr/lib/pig/lib/avro-*.jar';
