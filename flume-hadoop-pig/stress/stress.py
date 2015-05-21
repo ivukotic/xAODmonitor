@@ -9,7 +9,7 @@ timeout = 2
 socket.setdefaulttimeout(timeout)
 
 st=time.time()
-rows=10000
+rows=50
 
 for w in range(rows):
     
