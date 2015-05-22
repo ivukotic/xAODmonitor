@@ -2,14 +2,14 @@
 import urllib,urllib2
 import json as simplejson
 import random
-import time
-
+import time,sys
 import socket
+
 timeout = 2
 socket.setdefaulttimeout(timeout)
 
 st=time.time()
-rows=50
+rows=50000
 
 for w in range(rows):
     
@@ -44,8 +44,12 @@ for w in range(rows):
         r = urllib2.urlopen(req, simplejson.dumps(events))
     except urllib2.HTTPError, err:
         print err
-    
-
+    except socket.timeout, e:   
+        print 'this one timed out.'
+    except: # catch *all* exceptions
+        e = sys.exc_info()[0]
+        print "<p>Error: %s</p>" % e 
+        
     if (not w%10):
         et=time.time()
         print w,'insertion rate:',str(w/(et-st)),'Hz'
